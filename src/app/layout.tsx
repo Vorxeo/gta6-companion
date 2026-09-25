@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./product.css";
 export const metadata: Metadata = {
-  title: "VI Companion — Seu próximo mundo",
   description:
-    "Seu espaço para planejar a próxima aventura em Leonida. Projeto independente de fãs.",
+    "Plan your next Leonida adventure. An independent fan companion in English, Spanish and Brazilian Portuguese.",
 };
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

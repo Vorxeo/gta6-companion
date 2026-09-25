@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
-export function ScrollCinema({ motion }: { motion: boolean }) {
+import type { Messages } from "@/lib/i18n";
+export function ScrollCinema({ motion, t }: { motion: boolean; t: Messages }) {
   const section = useRef<HTMLElement>(null),
     video = useRef<HTMLVideoElement>(null),
     [progress, setProgress] = useState(0),
@@ -59,9 +60,10 @@ export function ScrollCinema({ motion }: { motion: boolean }) {
   const active = motion;
   return (
     <section
+      id="cinema"
       ref={section}
       className={`cinema ${active ? "" : "cinema-static"}`}
-      aria-label="GTA VI: experiência cinematográfica por rolagem"
+      aria-label={t.cinemaLabel}
     >
       <div className="cinema-sticky">
         <video
@@ -74,56 +76,58 @@ export function ScrollCinema({ motion }: { motion: boolean }) {
           controls={!active}
           onLoadedMetadata={() => setLoaded(true)}
           onError={() => setFailed(true)}
-          aria-label="Animação oficial da arte de GTA VI, Rockstar Games"
+          aria-label={t.videoLabel}
         />
         <div className="cinema-shade" />
         <div className="cinema-top">
-          <span>ROCKSTAR GAMES · OFFICIAL COVER ART</span>
+          <span>{t.officialArt}</span>
           <a
             href="https://www.rockstargames.com/VI/media/videos"
             target="_blank"
             rel="noreferrer"
           >
-            VER ORIGINAL <ArrowUpRight size={14} />
+            {t.original} <ArrowUpRight size={14} />
           </a>
         </div>
         <div className="cinema-title">
-          <span className="eyebrow">BEM-VINDO AO OUTRO LADO DO PARAÍSO</span>
+          <span className="eyebrow">{t.cinemaEyebrow}</span>
           <h2>
             {progress < 0.33 ? (
               <>
-                Mais cor.
+                {t.cinema1}
                 <br />
-                <em>Mais vida.</em>
+                <em>{t.cinema1b}</em>
               </>
             ) : progress < 0.66 ? (
               <>
-                Sinta o ritmo.
+                {t.cinema2}
                 <br />
-                <em>Viva Leonida.</em>
+                <em>{t.cinema2b}</em>
               </>
             ) : (
               <>
-                A próxima história
+                {t.cinema3}
                 <br />
-                <em>é sua.</em>
+                <em>{t.cinema3b}</em>
               </>
             )}
           </h2>
           <p>
             {failed
-              ? "O vídeo não carregou. Assista à versão oficial no link acima."
+              ? t.videoError
               : !loaded
-                ? "Preparando sua viagem a Leonida…"
+                ? t.videoLoading
                 : active
-                  ? "Role para dar vida a este mundo. Avance. Volte. Explore."
-                  : "Use os controles para assistir à animação oficial."}
+                  ? t.videoScroll
+                  : t.videoControls}
           </p>
         </div>
+        <a className="cinema-skip" href="#discover">
+          {t.skipCinema} ↑
+        </a>
         <div className="cinema-bottom">
           <span>
-            <ArrowDown size={14} />{" "}
-            {active ? "SCROLL TO EXPLORE" : "CONTROLE DE REPRODUÇÃO"}
+            <ArrowDown size={14} /> {active ? t.scrollExplore : t.playback}
           </span>
           <div className="cinema-progress">
             <i style={{ transform: `scaleX(${progress})` }} />

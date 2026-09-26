@@ -54,3 +54,9 @@ The version 2 data reader migrates the previous `{ tasks, cars }` local-storage 
 ## Community direction
 
 The researched community strategy and implementation priorities are in [docs/community-strategy.pt-BR.md](docs/community-strategy.pt-BR.md). This is a proposal, not a live community: shared accounts, posts, moderation and synchronization are not implemented yet.
+
+## Pricing preview
+
+`/pricing` presents Explorer and a proposed Pro offer in English, Spanish and Brazilian Portuguese. Currency selection is independent of interface language. Proposed monthly/annual totals are BRL 19.90/199.00, USD 4.99/49.90 and EUR 4.99/49.90; these are product hypotheses, not approved live prices or exchange-rate conversions. Annual pricing equals ten monthly payments.
+
+Current personal tools remain free. Cloud sync, advanced community itineraries, private clubs and session insights are explicitly marked as planned. The Pro CTA navigates to the roadmap; it does not simulate payment or collect an unconnected waitlist. There is no checkout, active subscription, account service or automatic renewal. Before selling, implement and validate paid entitlements, payment handling, cancellation and final billing terms. The page is linked from the homepage navigation and footer.

@@ -1,0 +1,106 @@
+.pricing-page { background: #130e20; color:#f6f0fa; min-height:100vh; overflow:clip; }
+.pricing-header { max-width:1240px; margin:auto; padding:28px 32px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.pricing-brand { display:flex; align-items:center; gap:10px; font-size:30px; font-weight:900; letter-spacing:-2px; }
+.pricing-brand>span { font-size:11px; letter-spacing:2px; }
+.pricing-brand .pricing-brand-star { color:#ffaece; font-size:24px; }
+.pricing-header-actions,.pricing-back { display:flex; align-items:center; gap:22px; }
+.pricing-back { gap:8px; font-size:12px; color:#c5b9d5; }
+.pricing-main { max-width:1120px; margin:auto; padding:0 32px; }
+.pricing-hero { position:relative; text-align:center; padding:76px 0 40px; isolation:isolate; }
+.pricing-kicker { display:inline-flex; align-items:center; gap:8px; color:#b5f4da; font-size:11px; font-weight:700; letter-spacing:2px; }
+.pricing-hero h1 { position:relative; font-size:clamp(42px,6.3vw,76px); line-height:1.05; letter-spacing:-4px; margin:24px auto; max-width:950px; }
+.pricing-hero h1 em { font-style:normal; background:linear-gradient(100deg,#ffb491,#ff8bc9 50%,#bcacff); color:transparent; background-clip:text; }
+.pricing-hero>p { max-width:530px; margin:0 auto; color:#c4b9d3; line-height:1.8; font-size:16px; }
+.pricing-orbit { position:absolute; z-index:-1; width:330px; height:330px; left:50%; top:20px; transform:translateX(-50%); opacity:.13; pointer-events:none; }
+.pricing-orbit i { position:absolute; inset:0; border:2px solid #fb8bcf; border-radius:50%; transform:rotateX(65deg) rotate(-25deg); }
+.pricing-orbit i:nth-child(2) { transform:rotateY(65deg) rotate(25deg); border-color:#9ff6d7; }
+.pricing-orbit>span { display:block; text-align:center; font-size:240px; font-weight:900; color:#e4b7fa; filter:blur(3px); }
+.pricing-options { display:flex; justify-content:center; align-items:center; gap:20px; flex-wrap:wrap; margin-top:8px; }
+.billing-toggle { display:flex; background:#211a30; padding:5px; border:1px solid #ffffff18; border-radius:50px; gap:4px; }
+.billing-toggle button { padding:12px 18px; color:#c6bbd4; background:transparent; border-radius:40px; font-size:13px; }
+.billing-toggle button[aria-pressed="true"] { background:#ece3f7; color:#21182c; box-shadow:0 3px 16px #0002; }
+.billing-toggle button>span { display:inline-block; margin-left:8px; font-size:10px; color:#adeecf; }
+.billing-toggle button[aria-pressed="true"]>span { color:#215543; }
+.pricing-currency { display:flex; align-items:center; gap:8px; color:#bfb2cd; font-size:12px; }
+.pricing-currency select { background:#211a30; color:#f5eefa; border:1px solid #ffffff25; border-radius:8px; padding:10px; }
+.pricing-notice { text-align:center; color:#c9b7d4; font-size:12px; line-height:1.7; margin:20px auto 30px; max-width:650px; }
+.pricing-plans { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:stretch; }
+.pricing-tilt { min-width:0; display:flex; }
+.price-card { border:1px solid #ffffff21; border-radius:24px; padding:34px; width:100%; background:linear-gradient(145deg,#252336,#181723); display:flex; flex-direction:column; position:relative; }
+.pro-card { background:radial-gradient(ellipse at 100% 0,#7d386766,transparent 65%),linear-gradient(150deg,#392343,#21162e); border-color:#d78baa99; box-shadow:0 20px 80px #ec67a31a; }
+.plan-status { display:flex; gap:7px; align-items:center; color:#a9f2d0; font-size:10px; font-weight:700; letter-spacing:1.3px; }
+.plan-status>span { width:6px; height:6px; border-radius:50%; background:currentColor; }
+.pro-card .plan-status { color:#ffc2dc; }
+.price-card h2 { font-size:29px; letter-spacing:-1px; margin:24px 0 10px; }
+.price-card h2 em { font-style:normal; color:#ffb9d5; }
+.plan-description { color:#c8bdd4; font-size:14px; line-height:1.7; min-height:48px; margin:0; }
+.plan-price { display:flex; align-items:baseline; gap:8px; margin-top:30px; flex-wrap:wrap; }
+.plan-price strong { font-size:clamp(36px,4vw,50px); letter-spacing:-2px; }
+.plan-price>span { font-size:13px; color:#c4b4cf; }
+.price-detail { color:#bcacc9; font-size:12px; line-height:1.6; min-height:38px; margin:8px 0 20px; }
+.plan-cta { display:flex; justify-content:center; align-items:center; gap:14px; padding:16px 18px; border-radius:12px; font-size:13px; font-weight:700; min-height:50px; text-align:center; transition:transform .2s,filter .2s; }
+.plan-cta:hover { transform:translateY(-3px); filter:brightness(1.08); }
+.free-cta { background:#ffffff0b; border:1px solid #ffffff38; }
+.pro-cta { background:linear-gradient(110deg,#ffd7a9,#ffa3c7 65%,#ddaafa); color:#28162f; }
+.price-card h3 { font-size:12px; margin:28px 0 20px; color:#ece0f5; }
+.price-card ul { list-style:none; padding:0; margin:0 0 24px; display:grid; gap:17px; }
+.price-card li { display:flex; align-items:flex-start; gap:12px; color:#e1d7eb; font-size:13px; line-height:1.5; }
+.price-card li svg { flex-shrink:0; color:#a9f3d4; margin-top:2px; }
+.pro-card li svg { color:#ffb9d7; }
+.plan-footnote { border-top:1px solid #ffffff15; padding-top:18px; margin-top:auto; color:#bfb0ca; font-size:11px; line-height:1.7; }
+.pricing-comparison,.pro-roadmap,.pricing-faq { margin-top:95px; }
+.pricing-main section>h2 { font-size:clamp(26px,3vw,36px); letter-spacing:-1.2px; line-height:1.2; margin:16px 0 32px; }
+.comparison-scroll { overflow-x:auto; }
+.pricing-comparison table { width:100%; border-collapse:collapse; font-size:13px; }
+.pricing-comparison th,.pricing-comparison td { text-align:left; padding:19px 16px; border-bottom:1px solid #ffffff14; line-height:1.5; }
+.pricing-comparison th { font-weight:500; }
+.pricing-comparison thead { color:#b8a9c9; font-size:11px; letter-spacing:1px; }
+.pricing-comparison td { color:#a5e8ca; width:23%; }
+.planned-pill { color:#e8b8dc; background:#ce82b615; border-radius:20px; padding:5px 10px; font-size:11px; }
+.pro-benefits { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.pro-benefits article { padding:26px; background:#20182c; border:1px solid #ffffff12; border-radius:18px; }
+.benefit-icon { width:58px; height:58px; display:grid; place-items:center; border-radius:16px; background:#344c47; color:#b0f3d5; transform:rotate(-7deg); box-shadow:5px 6px 0 #0b0b1738; }
+.benefit-1 { background:#513344; color:#ffc1d3; }
+.benefit-2 { background:#3b355a; color:#c8b8ff; }
+.benefit-status { display:block; color:#bcb0ca; font-size:10px; margin-top:22px; text-transform:uppercase; letter-spacing:1px; }
+.pro-benefits h3 { font-size:20px; margin:10px 0; line-height:1.25; letter-spacing:-.5px; }
+.pro-benefits p { font-size:13px; line-height:1.8; color:#c2b4cf; }
+.pricing-faq { max-width:760px; margin-left:auto; margin-right:auto; }
+.pricing-faq details { border-bottom:1px solid #ffffff21; }
+.pricing-faq summary { cursor:pointer; list-style:none; padding:24px 0; display:flex; justify-content:space-between; gap:24px; font-size:15px; line-height:1.5; }
+.pricing-faq summary::-webkit-details-marker { display:none; }
+.pricing-faq summary svg { flex-shrink:0; color:#e6bbec; }
+.pricing-faq details[open] summary svg { transform:rotate(45deg); }
+.pricing-faq details>p { color:#c7b8d5; line-height:1.8; font-size:14px; margin:0 25px 24px 0; }
+.pricing-end { text-align:center; margin:90px 0 60px; padding:50px 24px; border:1px solid #f1a3ce2b; border-radius:24px; background:radial-gradient(ellipse at bottom,#65415c60,transparent 80%); }
+.pricing-end>svg { color:#ffc29f; margin:auto; }
+.pricing-end>p { color:#cdbdd5; line-height:1.8; font-size:14px; }
+.pricing-end .plan-cta { max-width:320px; margin:26px auto 0; }
+.pricing-footer { max-width:1240px; margin:auto; padding:30px 32px; border-top:1px solid #ffffff13; display:flex; justify-content:space-between; gap:25px; }
+.pricing-footer>a { font-size:12px; font-weight:bold; letter-spacing:2px; }
+.pricing-footer>p { margin:0; color:#b5a6c3; font-size:11px; line-height:1.7; }
+#pro-roadmap { scroll-margin-top:30px; }
+@media(max-width:700px) {
+  .pricing-main { padding:0 20px; }
+  .pricing-header { padding:20px; gap:12px; }
+  .pricing-header-actions { gap:12px; }
+  .pricing-back { display:none; }
+  .pricing-brand { gap:7px; font-size:26px; }
+  .pricing-brand>span { font-size:9px; letter-spacing:1px; }
+  .pricing-brand .pricing-brand-star { display:none; }
+  .pricing-hero { padding:52px 0 30px; }
+  .pricing-hero h1 { letter-spacing:-2px; }
+  .pricing-hero>p { font-size:14px; }
+  .pricing-plans,.pro-benefits { grid-template-columns:1fr; }
+  .price-card { padding:26px; }
+  .pricing-comparison,.pro-roadmap,.pricing-faq { margin-top:60px; }
+  .pricing-comparison th,.pricing-comparison td { padding:15px 7px; font-size:11px; }
+  .planned-pill { padding:4px 6px; font-size:10px; }
+  .pricing-comparison td { width:24%; }
+  .pricing-footer { flex-direction:column; gap:14px; }
+  .pricing-options { gap:15px; }
+  .billing-toggle button { padding:11px 13px; }
+}
+@media(prefers-reduced-motion:reduce) { .plan-cta { transition:none; } .plan-cta:hover { transform:none; } }
+.motion-off .plan-cta { transition:none; }
+.motion-off .plan-cta:hover { transform:none; }

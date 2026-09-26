@@ -22,6 +22,8 @@ import { Tilt, Skyline } from "@/components/Atmosphere";
 import { Workspace, type Panel, type Timer } from "@/components/Workspace";
 import { messages, browserLocale, isLocale, type Locale } from "@/lib/i18n";
 import { initialData, readData, type Data } from "@/lib/model";
+import Link from "next/link";
+import { pricingLabels, pricingTeaser } from "@/lib/pricing";
 export default function Home() {
   const [locale, setLocale] = useState<Locale>("en"),
     [ready, setReady] = useState(false),
@@ -172,6 +174,7 @@ export default function Home() {
             </a>
             <button onClick={() => open("explore")}>{t.explore}</button>
             <button onClick={() => open("tracker")}>{t.progress}</button>
+            <Link href="/pricing">{pricingLabels[locale]}</Link>
           </nav>
           <div className="header-actions">
             <label className="language-switch">
@@ -364,6 +367,11 @@ export default function Home() {
             </div>
           </section>
           </div>
+          <aside className="home-pricing-teaser">
+            <Sparkles size={26} aria-hidden="true" />
+            <div><h2>{pricingTeaser[locale].title}</h2><p>{pricingTeaser[locale].text}</p></div>
+            <Link href="/pricing">{pricingTeaser[locale].cta}<ArrowUpRight size={18}/></Link>
+          </aside>
           <ScrollCinema motion={motion} t={t} />
           <div className="page-content">
           <section className="journey">
@@ -391,7 +399,7 @@ export default function Home() {
             <br />
             {t.disclaimer}
           </p>
-          <span>{t.farewell} ↗</span>
+          <Link href="/pricing">{pricingLabels[locale]} ↗</Link>
         </footer>
         {timer.started && !panel && (
           <button className="timer-floating" onClick={() => open("planner")}>

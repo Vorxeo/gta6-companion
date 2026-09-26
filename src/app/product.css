@@ -1346,3 +1346,10 @@ footer > span {
   .scroll-scene-active { height: 240svh; }
   .scene-caption { align-items: flex-start; font-size: 11px; }
 }
+.home-pricing-teaser { display:flex; align-items:center; gap:24px; max-width:1100px; margin:40px auto; padding:28px 32px; border:1px solid #f4afcf30; border-radius:18px; background:linear-gradient(110deg,#30243e,#49304455); }
+.home-pricing-teaser>svg { color:#ffbad2; flex-shrink:0; }
+.home-pricing-teaser h2 { font-size:23px; letter-spacing:-.5px; margin:0 0 8px; }
+.home-pricing-teaser p { color:#c1b2cd; font-size:13px; line-height:1.7; margin:0; }
+.home-pricing-teaser>a { margin-left:auto; display:flex; gap:12px; align-items:center; flex-shrink:0; font-size:13px; font-weight:700; padding:14px 18px; border-radius:10px; background:#ffd0df; color:#341e3e; }
+@media(max-width:1150px) { .home-pricing-teaser { margin:30px 4%; } }
+@media(max-width:640px) { .home-pricing-teaser { flex-wrap:wrap; padding:24px; gap:16px; } .home-pricing-teaser>div { flex:1; } .home-pricing-teaser>a { margin-left:0; } }

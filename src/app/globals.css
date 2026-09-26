@@ -126,7 +126,7 @@ button {
 .mobile-menu {
   display: none !important;
 }
-main {
+.page-content {
   padding: 24px 4% 0;
   max-width: 1800px;
   margin: auto;

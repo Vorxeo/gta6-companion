@@ -204,6 +204,7 @@ export default function Home() {
           </div>
         </header>
         <main id="main">
+          <div className="page-content">
           <section className="hero">
             <Skyline />
             <div className="hero-content">
@@ -362,7 +363,9 @@ export default function Home() {
               ))}
             </div>
           </section>
+          </div>
           <ScrollCinema motion={motion} t={t} />
+          <div className="page-content">
           <section className="journey">
             <div className="journey-symbol">
               <Sparkles size={30} />
@@ -377,6 +380,7 @@ export default function Home() {
               <ArrowUpRight size={18} />
             </button>
           </section>
+          </div>
         </main>
         <footer>
           <a className="footer-logo" href="#">

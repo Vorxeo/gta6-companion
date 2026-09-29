@@ -1401,3 +1401,4 @@ footer > span {
 @media(max-width:770px) { .merged-hub { margin:60px auto; padding:0 20px; } .merged-grid { grid-template-columns:1fr; } .coast-radio { flex-direction:column; align-items:flex-start; } .merged-side-note { display:none; } }
 @media(max-width:480px) { .lighting-switch { right:10px; top:10px; } .lighting-switch button { padding:7px; font-size:9px; } .radio-controls { gap:9px; } }
 @media(prefers-reduced-motion:reduce) { .hero .city { transition:none; } }
+.feature-card-locked .card-art{filter:blur(7px);opacity:.75}.feature-card-locked .card-copy p{filter:blur(2px)}.feature-card-locked .card-link{display:inline-flex;align-items:center;gap:6px;color:#ffe7a6}.merged-card-locked p{filter:blur(2px);opacity:.8}.merged-card-locked a{color:#ffe8a8}.feature-card-locked:hover .card-art{filter:blur(4px)}

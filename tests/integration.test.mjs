@@ -13,15 +13,18 @@ test("workspace redirects accept only known panels", () => {
   assert.equal(safePanel("https://example.com"), "tracker");
   assert.equal(workspacePath("../../pricing"), "/workspace?panel=tracker");
   assert.equal(safeDestination("creator-lab",null), "/creator-lab");
+  assert.equal(safeDestination("pricing",null), "/pricing");
+  assert.equal(safeDestination("billing",null), "/billing");
   assert.equal(safeDestination("//example.com","garage"), "/workspace?panel=garage");
 });
 
 test("paid access expires and rejects malformed entitlement data", () => {
   const now = Date.parse("2026-09-29T12:00:00Z");
-  assert.equal(hasActiveSubscription({status:"trialing",current_period_end:"2026-09-30T00:00:00Z"},now), true);
-  assert.equal(hasActiveSubscription({status:"active",current_period_end:"2026-09-29T12:00:00Z"},now), false);
-  assert.equal(hasActiveSubscription({status:"canceled",current_period_end:"2026-10-30T00:00:00Z"},now), false);
-  assert.equal(hasActiveSubscription({status:"active",current_period_end:"not-a-date"},now), false);
+  assert.equal(hasActiveSubscription({provider:"mollie",status:"trialing",current_period_end:"2026-09-30T00:00:00Z"},now), false);
+  assert.equal(hasActiveSubscription({provider:"mollie",status:"active",current_period_end:"2026-09-30T00:00:00Z"},now), true);
+  assert.equal(hasActiveSubscription({provider:"mollie",status:"active",current_period_end:"2026-09-29T12:00:00Z"},now), false);
+  assert.equal(hasActiveSubscription({provider:"mollie",status:"canceled",current_period_end:"2026-10-30T00:00:00Z"},now), true);
+  assert.equal(hasActiveSubscription({provider:"mollie",status:"active",current_period_end:"not-a-date"},now), false);
 });
 
 test("merged experience has complete text in all three languages", () => {

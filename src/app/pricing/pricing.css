@@ -104,3 +104,4 @@
 @media(prefers-reduced-motion:reduce) { .plan-cta { transition:none; } .plan-cta:hover { transform:none; } }
 .motion-off .plan-cta { transition:none; }
 .motion-off .plan-cta:hover { transform:none; }
+.pricing-checkout{margin:20px 0}.pricing-consent{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6;color:#e7d8eb;margin:16px 0}.pricing-consent input{margin-top:4px;accent-color:#f6c16d;flex-shrink:0}.pricing-legal{font-size:12px;margin:12px 0}.pricing-legal a{text-decoration:underline;color:#f7cae9}.pricing-checkout button{width:100%;cursor:pointer;border:0}.pricing-checkout button:disabled{opacity:.55;cursor:not-allowed;transform:none}.pricing-checkout-status{font-size:12px;color:#ffe4b1;line-height:1.5}

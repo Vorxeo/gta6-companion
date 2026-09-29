@@ -3,7 +3,6 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { authCopy } from "@/lib/auth/copy";
 import { signOut } from "@/lib/auth/actions";
-import { workspacePath } from "@/lib/auth/policy";
 import {
   ArrowUpRight,
   ArrowRight,
@@ -20,6 +19,7 @@ import {
   CheckCheck,
   ArrowDown,
   ShieldCheck,
+  LockKeyhole,
 } from "lucide-react";
 import { ScrollCinema } from "@/components/ScrollCinema";
 import MergedHub from "@/components/MergedHub";
@@ -30,7 +30,7 @@ import { messages, browserLocale, isLocale, type Locale } from "@/lib/i18n";
 import { initialData, readData, type Data } from "@/lib/model";
 import Link from "next/link";
 import { pricingLabels, pricingTeaser } from "@/lib/pricing";
-export default function Home({ userId = null, initialPanel = null }: { userId?: string | null; initialPanel?: Panel | null }) {
+export default function Home({ userId = null, signedIn = false, initialPanel = null }: { userId?: string | null; signedIn?: boolean; initialPanel?: Panel | null }) {
   const router = useRouter();
   const [locale, setLocale] = useState<Locale>("en"),
     [ready, setReady] = useState(false),
@@ -120,7 +120,7 @@ export default function Home({ userId = null, initialPanel = null }: { userId?: 
     setTimer({ remaining: data.minutes * 60, running: false, started: false });
   const open = (id: Panel) => {
     if (!userId) {
-      router.push(workspacePath(id));
+      router.push(`/pricing?feature=${id}`);
       return;
     }
     setPanel(id);
@@ -217,8 +217,8 @@ export default function Home({ userId = null, initialPanel = null }: { userId?: 
               VC
             </button>
             <div className="account-links">
-              {userId ? (
-                <form action={signOut}><button className="account-signout" type="submit">{authCopy[locale].signout}</button></form>
+              {signedIn || userId ? (
+                <><Link href={userId?"/billing":"/pricing"}>{userId?"Pro":locale==="pt-BR"?"Desbloquear Pro":locale==="es"?"Desbloquear Pro":"Unlock Pro"}</Link><form action={signOut}><button className="account-signout" type="submit">{authCopy[locale].signout}</button></form></>
               ) : (
                 <><Link href="/sign-in">{authCopy[locale].signin}</Link><Link href="/sign-up">{authCopy[locale].signup}</Link></>
               )}
@@ -345,7 +345,7 @@ export default function Home({ userId = null, initialPanel = null }: { userId?: 
               {features.map((d, i) => (
                 <Tilt
                   key={d.id}
-                  className={`feature-card card-${d.id}`}
+                  className={`feature-card card-${d.id} ${!userId ? "feature-card-locked" : ""}`}
                   style={{ "--accent": d.color } as CSSProperties}
                 >
                   <button
@@ -377,7 +377,7 @@ export default function Home({ userId = null, initialPanel = null }: { userId?: 
                       <h3>{d.title}</h3>
                       <p>{d.text}</p>
                       <span className="card-link">
-                        {d.id === "explore" ? t.exploreConcept : t.openTool}
+                        {!userId ? <><LockKeyhole size={14}/> Pro · {pricingLabels[locale]}</> : d.id === "explore" ? t.exploreConcept : t.openTool}
                         <ArrowUpRight size={17} />
                       </span>
                     </div>
@@ -392,7 +392,7 @@ export default function Home({ userId = null, initialPanel = null }: { userId?: 
             <div><h2>{pricingTeaser[locale].title}</h2><p>{pricingTeaser[locale].text}</p></div>
             <Link href="/pricing">{pricingTeaser[locale].cta}<ArrowUpRight size={18}/></Link>
           </aside>
-          <MergedHub locale={locale}/>
+          <MergedHub locale={locale} isPro={!!userId}/>
           <ScrollCinema motion={motion} t={t} />
           <div className="page-content">
           <section className="journey">

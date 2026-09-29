@@ -38,3 +38,5 @@
 .community-detail>span { color:#aaa; font-size:11px; }
 .community-detail>a { margin-left:20px; }
 @media(max-width:620px) { .community-page header>span { display:none; } .community-page main { padding:25px 18px 60px; } .community-form-row { grid-template-columns:1fr; } .community-compose form { padding:20px; } }
+.community-pro-lock{padding:36px;margin-top:20px;border:1px solid #ffffff4a;border-radius:18px;background:linear-gradient(120deg,#ef5e8444,#643ac277);backdrop-filter:blur(8px);text-align:center}.community-pro-lock svg{color:#ffe7aa}.community-pro-lock a{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:30px;background:#ffe7aa;color:#26142f;text-decoration:none;font-weight:800}
+.community-pro-lock{position:relative;overflow:hidden}.community-pro-lock::before{content:"";position:absolute;inset:12px;background:repeating-linear-gradient(0deg,#ffffff38 0 16px,transparent 16px 42px);filter:blur(12px);opacity:.42;pointer-events:none}.community-pro-lock>*{position:relative}

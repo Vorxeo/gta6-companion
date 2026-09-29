@@ -6,6 +6,8 @@ export function workspacePath(panel: unknown) {
   return `/workspace?panel=${safePanel(panel)}`;
 }
 export function safeDestination(next: unknown, panel: unknown) {
+  if (next === "pricing") return "/pricing";
+  if (next === "billing") return "/billing";
   if (next === "arcade") return "/arcade";
   if (next === "creator-lab") return "/creator-lab";
   return workspacePath(panel);
@@ -13,7 +15,8 @@ export function safeDestination(next: unknown, panel: unknown) {
 export function hasActiveSubscription(value: unknown, now = Date.now()): boolean {
   if (!value || typeof value !== "object") return false;
   const record = value as Record<string, unknown>;
-  if (record.status !== "active" && record.status !== "trialing") return false;
+  if (record.provider !== "mollie") return false;
+  if (record.status !== "active" && record.status !== "canceled") return false;
   if (typeof record.current_period_end !== "string") return false;
   const end = Date.parse(record.current_period_end);
   return Number.isFinite(end) && end > now;

@@ -7,6 +7,7 @@ test("country overrides language when suggesting a currency", () => {
   assert.equal(suggestedCurrency("US", "nl"), "USD");
   assert.equal(suggestedCurrency("NL", "pt-BR"), "EUR");
   assert.equal(suggestedCurrency("ES", "en"), "EUR");
+  assert.equal(suggestedCurrency("BG", "en"), "EUR");
 });
 
 test("language supplies a fallback when country is unavailable", () => {

@@ -181,6 +181,7 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
             </span>
           </a>
           <nav className={menu ? "nav nav-open" : "nav"} aria-label={t.nav}>
+            <Link className="nav-community" href={`/community?lang=${locale}`} onClick={() => setMenu(false)}>{locale === "pt-BR" ? "Comunidade" : locale === "es" ? "Comunidad" : locale === "nl" ? "Gemeenschap" : "Community"}<span aria-hidden="true">✦</span></Link>
             <a href="#discover" onClick={() => setMenu(false)}>
               {t.discover}
             </a>
@@ -198,7 +199,7 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
               >
                 <option value="en">English</option>
                 <option value="es">Español</option>
-                <option value="pt-BR">Português (BR)</option>
+                <option value="pt-BR">Português (BR)</option><option value="nl">Nederlands</option>
               </select>
             </label>
             <button
@@ -218,7 +219,7 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
             </button>
             <div className="account-links">
               {signedIn || userId ? (
-                <><Link href={userId?"/billing":"/pricing"}>{userId?"Pro":locale==="pt-BR"?"Desbloquear Pro":locale==="es"?"Desbloquear Pro":"Unlock Pro"}</Link><form action={signOut}><button className="account-signout" type="submit">{authCopy[locale].signout}</button></form></>
+                <><Link href={userId?"/billing":"/pricing"}>{userId?"Pro":locale==="pt-BR"?"Desbloquear Pro":locale==="es"?"Desbloquear Pro":locale==="nl"?"Ontgrendel Pro":"Unlock Pro"}</Link><form action={signOut}><button className="account-signout" type="submit">{authCopy[locale].signout}</button></form></>
               ) : (
                 <><Link href="/sign-in">{authCopy[locale].signin}</Link><Link href="/sign-up">{authCopy[locale].signup}</Link></>
               )}

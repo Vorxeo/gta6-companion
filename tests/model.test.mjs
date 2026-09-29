@@ -7,7 +7,7 @@ import {
   taskTitle,
   normalizeText,
 } from "../src/lib/model.ts";
-import { en, es, pt, browserLocale } from "../src/lib/i18n.ts";
+import { en, es, pt, messages, browserLocale } from "../src/lib/i18n.ts";
 
 test("migrates existing objectives and vehicle strings without losing content", () => {
   const data = readData({
@@ -104,7 +104,7 @@ test("all supported session lengths allocate every minute exactly once", () => {
   }
 });
 test("all locales have complete nonempty messages and preserve custom user text", () => {
-  for (const locale of [es, pt]) {
+  for (const locale of [es, pt, messages.nl]) {
     assert.deepEqual(Object.keys(locale).sort(), Object.keys(en).sort());
     assert.ok(
       Object.values(locale).every((x) => typeof x === "string" && x.length),
@@ -127,6 +127,7 @@ test("all locales have complete nonempty messages and preserve custom user text"
 test("browser locale and duplicate matching are predictable", () => {
   assert.equal(browserLocale("pt-PT"), "pt-BR");
   assert.equal(browserLocale("es-MX"), "es");
+  assert.equal(browserLocale("nl-NL"), "nl");
   assert.equal(browserLocale("fr"), "en");
   assert.equal(normalizeText("  NEON   Ride "), normalizeText("neon ride"));
 });

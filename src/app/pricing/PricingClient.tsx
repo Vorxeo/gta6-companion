@@ -5,12 +5,14 @@ import { ArrowLeft, ArrowUpRight, Check, Sparkles, Globe2, Cloud, Route, Users, 
 import { Tilt } from "@/components/Atmosphere";
 import { browserLocale, isLocale, type Locale } from "@/lib/i18n";
 import { prices, formatPrice, pricingCopy, type Currency } from "@/lib/pricing";
+import { suggestedCurrency } from "@/lib/currency-choice";
 import { startCheckout } from "./actions";
 import "./pricing.css";
 
-export default function Pricing({available,brlAvailable,terms,privacy,error}: {available:boolean;brlAvailable:boolean;terms:string;privacy:string;error:string}) {
+export default function Pricing({available,brlAvailable,terms,privacy,error,country}: {available:boolean;brlAvailable:boolean;terms:string;privacy:string;error:string;country:string|null}) {
   const [locale, setLocale] = useState<Locale>("en");
-  const [currency, setCurrency] = useState<Currency>("USD");
+  const [currency, setCurrency] = useState<Currency>("EUR");
+  const [currencyPinned, setCurrencyPinned] = useState(false);
   const [annual, setAnnual] = useState(false);
   const [motion, setMotion] = useState(false);
   const [ready, setReady] = useState(false);
@@ -24,7 +26,10 @@ export default function Pricing({available,brlAvailable,terms,privacy,error}: {a
       if (preference === "true" || preference === "false") animate = preference === "true";
     } catch { /* Pricing remains usable without storage. */ }
     setLocale(language);
-    setCurrency(language === "pt-BR" ? "BRL" : language === "en" ? "USD" : "EUR");
+    let savedCurrency: Currency | null = null;
+    try { const saved = localStorage.getItem("vi-currency"); if (saved === "EUR" || saved === "USD" || saved === "BRL") savedCurrency = saved; } catch {}
+    setCurrencyPinned(!!savedCurrency);
+    setCurrency(savedCurrency || suggestedCurrency(country, language));
     setMotion(animate);
     setReady(true);
   }, []);
@@ -32,6 +37,14 @@ export default function Pricing({available,brlAvailable,terms,privacy,error}: {a
     document.documentElement.lang = locale;
     if (ready) try { localStorage.setItem("vi-language", locale); } catch { /* Session-only language. */ }
   }, [locale, ready]);
+  useEffect(() => {
+    if (ready && !currencyPinned) setCurrency(suggestedCurrency(country, locale));
+  }, [country, locale, ready, currencyPinned]);
+  const changeCurrency = (value: Currency) => {
+    setCurrency(value);
+    setCurrencyPinned(true);
+    try { localStorage.setItem("vi-currency", value); } catch {}
+  };
   const t = pricingCopy[locale];
   const price = prices[currency][annual ? "annual" : "monthly"];
   const canCheckout = available && (currency !== "BRL" || brlAvailable);
@@ -44,8 +57,9 @@ export default function Pricing({available,brlAvailable,terms,privacy,error}: {a
         <div className="pricing-header-actions">
           <Link href="/" className="pricing-back"><ArrowLeft size={15}/><span>{t.back}</span></Link>
           <Link href="/billing" className="pricing-back">{t.billingLink}</Link>
+          <Link href={`/community?lang=${locale}`} className="pricing-back">{locale==="nl"?"Gemeenschap":locale==="pt-BR"?"Comunidade":locale==="es"?"Comunidad":"Community"}</Link>
           <label className="language-switch"><Globe2 size={15}/><select aria-label={t.language} value={locale} onChange={e => setLocale(e.target.value as Locale)}>
-            <option value="en">English</option><option value="es">Español</option><option value="pt-BR">Português (BR)</option>
+            <option value="en">English</option><option value="es">Español</option><option value="pt-BR">Português (BR)</option><option value="nl">Nederlands</option>
           </select></label>
         </div>
       </header>
@@ -61,7 +75,7 @@ export default function Pricing({available,brlAvailable,terms,privacy,error}: {a
             <button aria-pressed={!annual} onClick={() => setAnnual(false)}>{t.monthly}</button>
             <button aria-pressed={annual} onClick={() => setAnnual(true)}>{t.annual}<span>{t.saving}</span></button>
           </div>
-          <label className="pricing-currency">{t.currency}<select value={currency} onChange={e => setCurrency(e.target.value as Currency)}>
+          <label className="pricing-currency">{t.currency}<select value={currency} onChange={e => changeCurrency(e.target.value as Currency)}>
             <option value="BRL">BRL · R$</option><option value="USD">USD · $</option><option value="EUR">EUR · €</option>
           </select></label>
         </div>
@@ -73,7 +87,7 @@ export default function Pricing({available,brlAvailable,terms,privacy,error}: {a
             <h2>{t.free}</h2><p className="plan-description">{t.freeDesc}</p>
             <div className="plan-price"><strong>{formatPrice(0, currency, locale)}</strong></div>
             <p className="price-detail">{t.forever}</p>
-            <Link className="plan-cta free-cta" href="/#discover">{t.freeCta}<ArrowUpRight size={18}/></Link>
+            <Link className="plan-cta free-cta" href={`/community?lang=${locale}`}>{t.freeCta}<ArrowUpRight size={18}/></Link>
             <h3>{t.included}</h3><ul>{t.freeFeatures.map(f => <li key={f}><Check size={17}/>{f}</li>)}</ul>
             <p className="plan-footnote">{t.local}</p>
           </article></Tilt>
@@ -98,7 +112,7 @@ export default function Pricing({available,brlAvailable,terms,privacy,error}: {a
         <section className="pricing-comparison">
           <h2>{t.comparison}</h2>
           <div className="comparison-scroll"><table><caption className="sr-only">{t.comparison}</caption><thead><tr><th scope="col">{t.feature}</th><th scope="col">Explorer</th><th scope="col">Pro</th></tr></thead>
-            <tbody>{t.rows.map((row,i) => <tr key={row}><th scope="row">{row}</th><td>{i < 3 ? t.now : <span aria-label={t.notIncluded}>—</span>}</td><td><span className={i < 3 ? "" : "planned-pill"}>{i < 3 ? t.now : t.future}</span></td></tr>)}</tbody>
+            <tbody>{t.rows.map((row,i) => <tr key={row}><th scope="row">{row}</th><td>{i < 4 ? t.now : <span aria-label={t.notIncluded}>—</span>}</td><td><span className={i < 4 ? "" : "planned-pill"}>{i < 4 ? t.now : t.future}</span></td></tr>)}</tbody>
           </table></div>
         </section>
         <section className="pro-roadmap" id="pro-roadmap" tabIndex={-1}>

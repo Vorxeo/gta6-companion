@@ -173,7 +173,7 @@ export const en = {
   themeNote: "Colorful by nature. Yours by design.",
 };
 export type Messages = typeof en;
-export type Locale = "en" | "es" | "pt-BR";
+export type Locale = "en" | "es" | "pt-BR" | "nl";
 export const pt: Messages = {
   language: "Idioma",
   skip: "Pular para o conteúdo",
@@ -523,14 +523,15 @@ export const es: Messages = {
   rename: "Nuevo nombre",
   themeNote: "Colorido por naturaleza. A tu manera.",
 };
-export const messages: Record<Locale, Messages> = { en, es, "pt-BR": pt };
+import { nl } from "./i18n-nl.ts";
+export const messages: Record<Locale, Messages> = { en, es, "pt-BR": pt, nl };
 export function isLocale(v: unknown): v is Locale {
-  return v === "en" || v === "es" || v === "pt-BR";
+  return v === "en" || v === "es" || v === "pt-BR" || v === "nl";
 }
 export function browserLocale(v: string): Locale {
   return v.toLowerCase().startsWith("pt")
     ? "pt-BR"
     : v.toLowerCase().startsWith("es")
       ? "es"
-      : "en";
+      : v.toLowerCase().startsWith("nl") ? "nl" : "en";
 }

@@ -27,13 +27,13 @@ test("paid access expires and rejects malformed entitlement data", () => {
   assert.equal(hasActiveSubscription({provider:"mollie",status:"active",current_period_end:"not-a-date"},now), false);
 });
 
-test("merged experience has complete text in all three languages", () => {
+test("merged experience has complete text in all four languages", () => {
   for (const bundle of [mergeCopy, communityCopy, guideCopy, arcadeCopy, labCopy]) {
-    for (const locale of ["es","pt-BR"]) {
+    for (const locale of ["es","pt-BR","nl"]) {
       assert.deepEqual(Object.keys(bundle[locale]).sort(),Object.keys(bundle.en).sort());
     }
   }
-  for (const locale of ["en","es","pt-BR"]) {
+  for (const locale of ["en","es","pt-BR","nl"]) {
     assert.equal(guideCopy[locale].topics.length,6);
     assert.ok(communityCopy[locale].warning.length > 12);
   }

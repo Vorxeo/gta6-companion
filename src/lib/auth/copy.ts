@@ -4,7 +4,7 @@ const en = {
   eyebrow: "YOUR SPACE IN LEONIDA", intro: "One account. Your plans, your progress, your next chapter.",
   email: "Email", password: "Password", newPassword: "New password", show: "Show password", hide: "Hide password",
   language: "Language", home: "Back to the website", plans: "View plans", account: "Your account", working: "Please wait…",
-  signinText: "Sign in to open your personal tools.", signupText: "Create your account to access the Explorer tools. Pro is planned separately.",
+  signinText: "Sign in to join the community or use your Pro tools.", signupText: "Create an account to publish and vote in the community. Personal tools require Pro.",
   forgotText: "Enter your email to request a password reset link.", resetText: "Use a new password with at least 12 characters.",
   hint: "At least 12 characters. Use a unique password.", forgotLink: "Forgot your password?", haveAccount: "Already have an account?", noAccount: "New here?",
   unavailable: "Account access is not available yet. Please check back once registration opens.",
@@ -13,7 +13,7 @@ const en = {
   updated: "Password updated. You can now open your workspace.", open: "Open my workspace",
   confirmation: "This link is invalid or expired. Request a new link or try signing in.",
   note: "Current tools save data in this browser, separately for each account. Cloud sync is not available yet.",
-  protect: "An account is required to use the tools. A Pro subscription will be separate from account creation.",
+  protect: "Community participation needs a confirmed account. Personal tools also need Pro.",
 };
 type Copy = typeof en;
 const pt: Copy = {
@@ -21,7 +21,7 @@ const pt: Copy = {
   eyebrow: "SEU ESPAÇO EM LEONIDA", intro: "Uma conta. Seus planos, seu progresso, seu próximo capítulo.",
   email: "E-mail", password: "Senha", newPassword: "Nova senha", show: "Mostrar senha", hide: "Ocultar senha",
   language: "Idioma", home: "Voltar ao site", plans: "Ver planos", account: "Sua conta", working: "Aguarde…",
-  signinText: "Entre na sua conta para abrir as ferramentas pessoais.", signupText: "Crie sua conta para acessar as ferramentas Explorer. O Pro está planejado separadamente.",
+  signinText: "Entre para participar da comunidade ou usar suas ferramentas Pro.", signupText: "Crie uma conta para publicar e votar na comunidade. Ferramentas pessoais exigem Pro.",
   forgotText: "Informe seu e-mail para solicitar um link de recuperação de senha.", resetText: "Use uma nova senha com pelo menos 12 caracteres.",
   hint: "Pelo menos 12 caracteres. Use uma senha exclusiva.", forgotLink: "Esqueceu sua senha?", haveAccount: "Já tem uma conta?", noAccount: "Primeira vez por aqui?",
   unavailable: "O acesso por conta ainda não está disponível. Volte quando os cadastros forem abertos.",
@@ -30,14 +30,14 @@ const pt: Copy = {
   updated: "Senha atualizada. Você já pode abrir seu espaço.", open: "Abrir meu espaço",
   confirmation: "Este link é inválido ou expirou. Solicite outro link ou tente entrar.",
   note: "As ferramentas atuais salvam dados neste navegador, separados por conta. A sincronização na nuvem ainda não está disponível.",
-  protect: "É preciso ter conta para usar as ferramentas. A assinatura Pro será separada da criação da conta.",
+  protect: "Participar da comunidade exige conta confirmada. Ferramentas pessoais também exigem Pro.",
 };
 const es: Copy = {
   signin: "Iniciar sesión", signup: "Crear cuenta", forgot: "Recuperar acceso", reset: "Elige una contraseña nueva", signout: "Cerrar sesión",
   eyebrow: "TU ESPACIO EN LEONIDA", intro: "Una cuenta. Tus planes, tu progreso, tu próximo capítulo.",
   email: "Correo electrónico", password: "Contraseña", newPassword: "Nueva contraseña", show: "Mostrar contraseña", hide: "Ocultar contraseña",
   language: "Idioma", home: "Volver al sitio", plans: "Ver planes", account: "Tu cuenta", working: "Espera…",
-  signinText: "Inicia sesión para abrir tus herramientas personales.", signupText: "Crea tu cuenta para acceder a las herramientas Explorer. Pro está previsto por separado.",
+  signinText: "Inicia sesión para participar en la comunidad o usar tus herramientas Pro.", signupText: "Crea una cuenta para publicar y votar en la comunidad. Las herramientas personales requieren Pro.",
   forgotText: "Introduce tu correo para solicitar un enlace de recuperación.", resetText: "Usa una contraseña nueva de al menos 12 caracteres.",
   hint: "Al menos 12 caracteres. Usa una contraseña única.", forgotLink: "¿Olvidaste tu contraseña?", haveAccount: "¿Ya tienes cuenta?", noAccount: "¿Es tu primera visita?",
   unavailable: "El acceso con cuenta aún no está disponible. Vuelve cuando se abran los registros.",
@@ -46,6 +46,7 @@ const es: Copy = {
   updated: "Contraseña actualizada. Ya puedes abrir tu espacio.", open: "Abrir mi espacio",
   confirmation: "Este enlace no es válido o ha caducado. Solicita otro o intenta iniciar sesión.",
   note: "Las herramientas actuales guardan datos en este navegador, separados por cuenta. Aún no hay sincronización en la nube.",
-  protect: "Necesitas una cuenta para usar las herramientas. La suscripción Pro será independiente de la creación de la cuenta.",
+  protect: "Participar en la comunidad requiere una cuenta confirmada. Las herramientas personales también requieren Pro.",
 };
-export const authCopy: Record<Locale, Copy> = { en, es, "pt-BR": pt };
+const nl:Copy={signin:"Inloggen",signup:"Account maken",forgot:"Toegang herstellen",reset:"Kies een nieuw wachtwoord",signout:"Uitloggen",eyebrow:"JOUW PLEK IN LEONIDA",intro:"Eén account. Jouw plannen, voortgang en volgende hoofdstuk.",email:"E-mail",password:"Wachtwoord",newPassword:"Nieuw wachtwoord",show:"Wachtwoord tonen",hide:"Wachtwoord verbergen",language:"Taal",home:"Terug naar de website",plans:"Bekijk abonnementen",account:"Jouw account",working:"Even geduld…",signinText:"Log in om je persoonlijke tools te openen.",signupText:"Maak een account om deel te nemen aan de gemeenschap. Persoonlijke tools horen bij Pro.",forgotText:"Vul je e-mailadres in om een herstellink aan te vragen.",resetText:"Gebruik een nieuw wachtwoord met minstens 12 tekens.",hint:"Minstens 12 tekens. Gebruik een uniek wachtwoord.",forgotLink:"Wachtwoord vergeten?",haveAccount:"Heb je al een account?",noAccount:"Nieuw hier?",unavailable:"Accounttoegang is nog niet beschikbaar. Kom terug zodra registratie opent.",failed:"De aanvraag is niet gelukt. Controleer je gegevens en e-mailbevestiging of probeer het later opnieuw.",invalid:"Controleer je e-mailadres en wachtwoordvereisten.",sent:"Controleer je inbox. Als de aanvraag in aanmerking komt, ontvang je een link. Kijk ook in spam.",updated:"Wachtwoord bijgewerkt. Je kunt nu je werkruimte openen.",open:"Open mijn werkruimte",confirmation:"Deze link is ongeldig of verlopen. Vraag een nieuwe aan of log in.",note:"Huidige tools bewaren gegevens per account in deze browser. Er is nog geen cloudsynchronisatie.",protect:"Voor de tools is een account nodig. Pro is een apart abonnement."};
+export const authCopy: Record<Locale, Copy> = { en, es, "pt-BR": pt, nl };

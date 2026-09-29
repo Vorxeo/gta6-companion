@@ -21,7 +21,7 @@ test("pricing languages include matching feature comparisons and FAQs", () => {
     assert.deepEqual(Object.keys(copy).sort(), Object.keys(pricingCopy.en).sort());
     assert.equal(copy.rows.length, 6);
     assert.equal(copy.freeFeatures.length, 5);
-    assert.equal(copy.proFeatures.length, 4);
+    assert.equal(copy.proFeatures.length, 3);
     assert.equal(copy.benefits.length, 3);
     assert.equal(copy.questions.length, 5);
     assert.ok(copy.notice.length > 0 && copy.proNote.length > 0);

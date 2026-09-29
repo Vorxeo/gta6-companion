@@ -1347,6 +1347,7 @@ footer > span {
   .scene-caption { align-items: flex-start; font-size: 11px; }
 }
 .home-pricing-teaser { display:flex; align-items:center; gap:24px; max-width:1100px; margin:40px auto; padding:28px 32px; border:1px solid #f4afcf30; border-radius:18px; background:linear-gradient(110deg,#30243e,#49304455); }
+.nav .nav-community { display:inline-flex; align-items:center; gap:7px; color:#ffd1dd; font-weight:800; }.nav-community span { color:#9ff5d8; }
 .home-pricing-teaser>svg { color:#ffbad2; flex-shrink:0; }
 .home-pricing-teaser h2 { font-size:23px; letter-spacing:-.5px; margin:0 0 8px; }
 .home-pricing-teaser p { color:#c1b2cd; font-size:13px; line-height:1.7; margin:0; }

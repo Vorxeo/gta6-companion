@@ -8,6 +8,7 @@ const copy = {
   en: {workspace:"Personal workspace",arcade:"Arcade","creator-lab":"Creator Lab",message:"Unlock this experience with Pro.",plans:"View Pro plans"},
   es: {workspace:"Espacio personal",arcade:"Arcade","creator-lab":"Laboratorio creativo",message:"Desbloquea esta experiencia con Pro.",plans:"Ver planes Pro"},
   "pt-BR": {workspace:"Espaço pessoal",arcade:"Fliperama","creator-lab":"Laboratório criativo",message:"Desbloqueie esta experiência com o Pro.",plans:"Ver planos Pro"},
+  nl: {workspace:"Persoonlijke werkruimte",arcade:"Arcade","creator-lab":"Creator Lab",message:"Ontgrendel deze ervaring met Pro.",plans:"Bekijk Pro-abonnementen"},
 };
 export default function ProGate({ feature }: { feature: "workspace" | "arcade" | "creator-lab" }) {
   const [locale,setLocale] = useState<Locale>("en");

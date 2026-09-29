@@ -57,7 +57,7 @@ export async function startCheckout(form: FormData) {
     const inserted = await admin.from("billing_checkouts").insert({ id: checkoutId, user_id: user.id, customer_id: customer.mollie_customer_id,
       currency: plan.currency, billing_interval: plan.interval, amount_cents: plan.cents, status: "creating" });
     if (inserted.error) throw inserted.error;
-    const locale = form.get("locale") === "es" ? "es_ES" : form.get("locale") === "pt-BR" ? "pt_PT" : "en_US";
+    const locale = form.get("locale") === "es" ? "es_ES" : form.get("locale") === "pt-BR" ? "pt_PT" : form.get("locale") === "nl" ? "nl_NL" : "en_US";
     const payment = await mollie<MollieCheckout>("/payments", { method: "POST", idempotencyKey: `${checkoutId}:payment`,
       body: { amount: { currency: plan.currency, value: plan.value }, customerId: customer.mollie_customer_id,
         sequenceType: "first", method: plan.method, locale,

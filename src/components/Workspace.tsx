@@ -862,7 +862,8 @@ export function Workspace({
                   if (
                     raw.locale === "en" ||
                     raw.locale === "es" ||
-                    raw.locale === "pt-BR"
+                    raw.locale === "pt-BR" ||
+                    raw.locale === "nl"
                   )
                     setLocale(raw.locale);
                   setUndo(null);

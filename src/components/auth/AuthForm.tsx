@@ -23,7 +23,7 @@ export default function AuthForm({mode,configured,panel="tracker",next="",confir
   const route = (kind:string) => `/${kind}?panel=${panel}${next?`&next=${encodeURIComponent(next)}`:""}`;
   return <div className="auth-page">
     <title>{`${t[mode]} — VI Companion`}</title>
-    <header className="auth-header"><Link href="/" className="auth-brand">VI <span>COMPANION ✦</span></Link><label className="language-switch"><Globe2 size={15}/><select aria-label={t.language} value={locale} onChange={e=>setLocale(e.target.value as Locale)}><option value="en">English</option><option value="es">Español</option><option value="pt-BR">Português (BR)</option></select></label></header>
+    <header className="auth-header"><Link href="/" className="auth-brand">VI <span>COMPANION ✦</span></Link><label className="language-switch"><Globe2 size={15}/><select aria-label={t.language} value={locale} onChange={e=>setLocale(e.target.value as Locale)}><option value="en">English</option><option value="es">Español</option><option value="pt-BR">Português (BR)</option><option value="nl">Nederlands</option></select></label></header>
     <main className="auth-main"><section className="auth-story"><span className="eyebrow">{t.eyebrow}</span><h1>{t.intro}</h1><div className="auth-emblem" aria-hidden="true">VI<span>✦</span></div><p><ShieldCheck size={19}/>{t.protect}</p><Link href="/pricing">{t.plans}<ArrowRight size={16}/></Link></section>
       <section className="auth-card"><h2>{t[mode]}</h2><p>{text}</p>
         {!configured && <div className="auth-notice" role="status">{t.unavailable}</div>}

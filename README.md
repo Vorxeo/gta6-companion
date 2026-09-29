@@ -1,62 +1,51 @@
-# VI Companion
+# VI Companion / After Dark
 
-A colorful, independent fan companion for GTA VI, built with Next.js 15, React 19, TypeScript and CSS 3D transforms.
+An independent, multilingual GTA VI fan companion, built with Next.js 15, React 19, TypeScript and CSS 3D motion. The GitHub experience combines its scroll-controlled cinematic scene and personal planning tools with original After Dark-inspired radio, an arcade game, a field guide and a community evidence board.
 
-## Run
+## Run and validate
 
-Requires Node.js 22.13+ (or a supported newer LTS).
+Use Node.js 22.13+ (or a newer supported LTS).
 
 ```sh
 npm ci
 npm run dev
 ```
 
-## Validate
-
 ```sh
+npm test
 npm run typecheck
 npm run build
 ```
 
 Do not run dev and build simultaneously: both use `.next`.
 
-## Features
+## Configure accounts and community
 
-- Sunset skyline, neon gradients, pointer-reactive 3D cards, floating icons and tags.
-- Full-bleed cinematic scene: scrolling smoothly seeks forward and backward through official Trailer 2 footage, with subtle perspective and depth. No player controls, media card or text over the footage.
-- Motion switch, initial OS reduced-motion preference, keyboard-accessible dialogs and responsive layout.
-- Personal objectives, completion toggles and a wishlist garage saved locally when storage is available.
-- Session planner that divides a chosen duration and saves the plan as a personal objective.
+The public landing page, pricing, guide and read-only community are available without an account. The tracker, garage, planner, arcade and community posting require a confirmed account. Basic member access is free by default. The Pro offer is a pricing preview: there is no checkout or automatic subscription creation.
 
-This is a fan project, not an official gameplay database or map. Lists are personal and not synchronized between devices.
+1. Create a Supabase project and copy `.env.example` to `.env.local`. Set its project URL, publishable key and the exact site origin. Never place a service-role key in `NEXT_PUBLIC_*` variables.
+2. Run `supabase/migrations/202609260001_subscriptions.sql` and `supabase/migrations/202609260002_community.sql` in the project's SQL editor.
+3. In Supabase Auth URL configuration, set the Site URL to your deployed origin. Allow `https://your-origin/auth/callback` and `https://your-origin/auth/confirm` as redirect URLs (and their localhost equivalents for development). Configure email delivery and verify the signup, reset and confirmation templates.
+4. Restart the Next.js server. Until these values and migrations exist, account forms are disabled and the community displays an honest unavailable state; the public site still works.
 
-## Media attribution
+`WORKSPACE_ACCESS=subscription` is an optional deployment setting that gates member tools and posting on a valid `subscriptions` row. Keep the default `account` until a trusted payment webhook, subscription lifecycle, cancellation flow and billing terms are implemented. Only a trusted backend should write entitlements; the client cannot grant itself paid access. There is currently no payment integration.
 
-The scene uses a 12-second excerpt (00:12–00:24) from Rockstar Games' official GTA VI Trailer 2 downloadable at https://www.rockstargames.com/VI/media/videos . Original source: https://media-rockstargames-com.akamaized.net/VI/downloads/videos/GTAVI_Trailer_2/GTAVI_Trailer_2.mp4 .
+Personal tracker, planner, garage and arcade data live in browser storage namespaced by authenticated user ID, not in Supabase. They are not synced across devices. The workspace offers JSON export and restore; export existing anonymous data before moving to an account. The community board is shared through Supabase, with post limits, voting, reporting and automatic hiding after three reports. Moderation still needs an operator workflow before a broad public launch. Spoiler posts require an account to read, with an explicit reveal screen.
 
-The web copy is 1920×864 H.264 (original letterboxing cropped), without audio, CRF 19, keyframes every 6 frames and fast-start metadata. The poster is its first frame. Video loading starts near the scene; motion off uses the poster without fetching the video. Scrolling remains native, including touch and keyboard navigation. Credits and the skip link sit outside the footage. Original footage belongs to Rockstar Games; no affiliation or endorsement is implied. The original video is linked from the experience.
-The skyline is a CSS illustration, not a game screenshot. Motion uses CSS perspective rather than a WebGL engine.
+## Experience
 
-## Multilingual product workspace
+- English, Spanish and Brazilian Portuguese copy, remembered language selection, keyboard access and reduced-motion preference.
+- Colorful skyline, lighting presets, reactive 3D cards and tags, and a full-bleed scroll-scrubbed official trailer excerpt. There is no video player chrome. Sound is opt-in, tied to scrolling, and pauses when the scene is idle or offscreen.
+- Original Web Audio Coast Radio with two generated stations; switching between radio and scene sound prevents competing audio.
+- Member workspace: objectives, garage, planner, timer, search, filters, undo, export and validated restore.
+- Member arcade: original 2D delivery game with keyboard/touch controls and a per-device best score.
+- Member Creator Lab: an original, interactive crew-scenario simulator with route, pressure and team controls; its scores are fictional and a scenario can be saved on this device.
+- Public field guide: six research questions and original prototype ideas, clearly separated from confirmed GTA VI facts.
+- Community board: observations, theories and crews with source links/timestamps, languages, spoiler labels, votes and reports. Source evidence is required for observations and theories.
+- `/pricing` shows proposed Explorer and Pro prices in BRL, USD and EUR. These are hypotheses, not live billing.
 
-The interface supports English, Spanish and Brazilian Portuguese, including accessible labels, empty/error states and the cinema. The browser language selects the initial locale, and the explicit language selection is remembered. User-entered names are never translated; generated session objectives use structured data so their labels follow the selected language.
+## Media and independence
 
-The redesigned dashboard opens a single responsive workspace with:
+The scene uses a 12-second excerpt (00:12–00:24) from [Rockstar Games' official GTA VI Trailer 2](https://www.rockstargames.com/VI/media/videos). The 1920×864 H.264 copy is optimized for bidirectional seeking, and the matching `.m4a` audio excerpt plays only after an explicit gesture. The poster is its first frame. Motion off uses the poster without fetching the video. Original footage belongs to Rockstar Games; this fan project is not affiliated with or endorsed by Rockstar Games.
 
-- Objectives: categories, search, completion filters, rename, delete and undo.
-- Garage: vehicle types, wishlist/owned status, favorites, search, rename and undo.
-- Planner: duration presets, exact time allocation, localized saved objectives and a deadline-based start/pause/resume/reset timer. The timer continues across tools while this page is open; it does not run across page reloads.
-- Explore: three illustrated inspiration prompts that select a session focus; these are not official game locations.
-- Data controls: JSON export and validated restore with replacement confirmation, list size limits and visible storage errors.
-
-The version 2 data reader migrates the previous `{ tasks, cars }` local-storage format. Tests cover migration, backup round trips and rejection, duplicate IDs, allocation totals and translation-key parity. Run `npm test` with Node 22.13+.
-
-## Community direction
-
-The researched community strategy and implementation priorities are in [docs/community-strategy.pt-BR.md](docs/community-strategy.pt-BR.md). This is a proposal, not a live community: shared accounts, posts, moderation and synchronization are not implemented yet.
-
-## Pricing preview
-
-`/pricing` presents Explorer and a proposed Pro offer in English, Spanish and Brazilian Portuguese. Currency selection is independent of interface language. Proposed monthly/annual totals are BRL 19.90/199.00, USD 4.99/49.90 and EUR 4.99/49.90; these are product hypotheses, not approved live prices or exchange-rate conversions. Annual pricing equals ten monthly payments.
-
-Current personal tools remain free. Cloud sync, advanced community itineraries, private clubs and session insights are explicitly marked as planned. The Pro CTA navigates to the roadmap; it does not simulate payment or collect an unconnected waitlist. There is no checkout, active subscription, account service or automatic renewal. Before selling, implement and validate paid entitlements, payment handling, cancellation and final billing terms. The page is linked from the homepage navigation and footer.
+The skyline is a CSS illustration. Card motion uses CSS perspective, not a WebGL engine. The arcade and synthesized radio are original companion experiences, not GTA VI gameplay or soundtrack.

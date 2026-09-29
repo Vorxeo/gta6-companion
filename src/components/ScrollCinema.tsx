@@ -1,12 +1,25 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { Volume2, VolumeX } from "lucide-react";
 import type { Messages } from "@/lib/i18n";
 
 export function ScrollCinema({ motion, t }: { motion: boolean; t: Messages }) {
   const section = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
+  const audio = useRef<HTMLAudioElement>(null);
   const [near, setNear] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [sound, setSound] = useState(false);
+
+  useEffect(() => {
+    const onFocus = (event: Event) => {
+      if ((event as CustomEvent<string>).detail === "scene") return;
+      audio.current?.pause();
+      setSound(false);
+    };
+    window.addEventListener("vi-audio-focus", onFocus);
+    return () => window.removeEventListener("vi-audio-focus", onFocus);
+  }, []);
 
   useEffect(() => {
     const root = section.current;
@@ -23,8 +36,10 @@ export function ScrollCinema({ motion, t }: { motion: boolean; t: Messages }) {
 
   useEffect(() => {
     const root = section.current, v = video.current;
-    if (!root || !v || !motion || !near || failed) return;
+    if (!motion) { audio.current?.pause(); return; }
+    if (!root || !v || !near || failed) return;
     let frame = 0, target = 0, visible = false;
+    let idle: ReturnType<typeof setTimeout> | undefined;
     v.pause();
     const seek = () => {
       frame = 0;
@@ -43,6 +58,16 @@ export function ScrollCinema({ motion, t }: { motion: boolean; t: Messages }) {
       visible = rect.bottom > 0 && rect.top < window.innerHeight;
       const p = Math.max(0, Math.min(1, -rect.top / Math.max(1, root.offsetHeight - window.innerHeight)));
       target = p * (Number.isFinite(v.duration) ? Math.max(0, v.duration - 0.05) : 0);
+      const a = audio.current;
+      if (a) {
+        if (!visible && !a.paused) a.pause();
+        if (visible && sound && a.readyState >= 1) {
+          if (Math.abs(a.currentTime - target) > 0.65) a.currentTime = target;
+          if (a.paused) void a.play().catch(() => setSound(false));
+          clearTimeout(idle);
+          idle = setTimeout(() => a.pause(), 260);
+        }
+      }
       root.style.setProperty("--scene-scale", String(1.08 - p * 0.06));
       root.style.setProperty("--scene-rotation", `${1.2 - p * 2.4}deg`);
       schedule();
@@ -54,6 +79,7 @@ export function ScrollCinema({ motion, t }: { motion: boolean; t: Messages }) {
     update();
     return () => {
       cancelAnimationFrame(frame);
+      clearTimeout(idle);
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
       v.removeEventListener("loadedmetadata", update);
@@ -61,13 +87,31 @@ export function ScrollCinema({ motion, t }: { motion: boolean; t: Messages }) {
       root.style.removeProperty("--scene-scale");
       root.style.removeProperty("--scene-rotation");
     };
-  }, [motion, near, failed]);
+  }, [motion, near, failed, sound]);
+
+  const toggleSound = () => {
+    const a = audio.current;
+    if (!a) return;
+    if (sound) { a.pause(); setSound(false); return; }
+    a.currentTime = video.current?.currentTime || 0;
+    a.volume = 0.55;
+    void a.play().then(() => {
+      setSound(true);
+      window.dispatchEvent(new CustomEvent("vi-audio-focus", { detail: "scene" }));
+    }).catch(() => setSound(false));
+  };
 
   return (
     <>
       <div className="scene-caption">
         <span>{motion ? t.videoScroll : t.videoControls}</span>
-        <a href="#cinema-end">{t.skipCinema} ↓</a>
+        <div className="scene-actions">
+          <button type="button" onClick={toggleSound} aria-pressed={sound} disabled={!near || failed || !motion}>
+            {sound ? <Volume2 size={16}/> : <VolumeX size={16}/>}
+            {sound ? t.soundOff : t.soundOn}
+          </button>
+          <a href="#cinema-end">{t.skipCinema} ↓</a>
+        </div>
       </div>
       <section id="cinema" ref={section}
         className={`scroll-scene ${motion && !failed ? "scroll-scene-active" : ""}`}
@@ -79,6 +123,7 @@ export function ScrollCinema({ motion, t }: { motion: boolean; t: Messages }) {
             preload="auto" muted playsInline controls={false}
             disablePictureInPicture disableRemotePlayback tabIndex={-1}
             onError={() => setFailed(true)} aria-label={t.videoLabel} />
+          <audio ref={audio} src={near ? "/media/leonida-scroll-audio.m4a" : undefined} preload="none" aria-hidden="true" />
         </div>
       </section>
       <div className="scene-caption" id="cinema-end" tabIndex={-1}>

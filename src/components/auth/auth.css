@@ -1,0 +1,37 @@
+.auth-page { min-height:100vh; color:#f8eefb; background:radial-gradient(ellipse at 0 70%,#442c49,transparent 55%),#130e20; }
+.auth-header { max-width:1200px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:28px 32px; }
+.auth-brand { font-size:30px; font-weight:900; letter-spacing:-2px; }
+.auth-brand span { font-size:10px; letter-spacing:2px; color:#ffc5de; }
+.auth-main { max-width:1100px; padding:64px 32px 90px; margin:auto; display:grid; grid-template-columns:1fr 1fr; gap:90px; align-items:center; }
+.auth-story h1 { font-size:clamp(36px,4.5vw,58px); line-height:1.08; letter-spacing:-2px; margin:25px 0; max-width:470px; }
+.auth-story .eyebrow { color:#b3f7da; }
+.auth-emblem { font-size:145px; line-height:1; font-weight:900; letter-spacing:-15px; color:#ffb2cd; text-shadow:7px 8px #704868,14px 16px #392b48; transform:perspective(600px) rotateY(-15deg) rotate(-8deg); padding:22px 0 34px; }
+.auth-emblem span { font-size:58px; color:#a4f5dc; vertical-align:top; margin-left:15px; }
+.auth-story p { display:flex; align-items:flex-start; gap:12px; color:#cbb9d2; font-size:13px; line-height:1.8; }
+.auth-story p svg { flex-shrink:0; margin-top:4px; color:#a7edce; }
+.auth-story>a { display:inline-flex; align-items:center; gap:10px; margin-top:18px; font-size:13px; color:#ffd0e5; }
+.auth-card { padding:34px; border:1px solid #edb3d030; border-radius:24px; background:linear-gradient(145deg,#35243f,#20172d); box-shadow:0 25px 90px #0003; }
+.auth-card h2 { font-size:30px; letter-spacing:-1px; margin:0 0 12px; }
+.auth-card>p { font-size:13px; color:#c6b7d2; line-height:1.7; }
+.auth-card fieldset { border:0; padding:0; margin:25px 0 0; min-width:0; }
+.auth-card label { display:block; font-size:12px; color:#e0d1e8; margin-top:20px; }
+.auth-card input:not([type=hidden]) { width:100%; padding:14px; background:#130e20; color:#fff; border:1px solid #ffffff2b; border-radius:10px; margin-top:9px; font-size:15px; }
+.auth-card input:disabled { opacity:.5; }
+.auth-card small { display:block; font-size:11px; color:#bca9c6; line-height:1.6; margin-top:9px; }
+.auth-password { position:relative; }
+.auth-password input { padding-right:48px!important; }
+.auth-password button { position:absolute; right:12px; top:23px; background:transparent; color:#c4afce; }
+.auth-forgot { display:block; text-align:right; font-size:12px; color:#e9bad3; margin-top:14px; }
+.auth-submit { display:flex; justify-content:center; gap:12px; align-items:center; width:100%; padding:15px; border-radius:10px; background:linear-gradient(100deg,#ffd1a9,#ffacd5); color:#311b34; font-weight:bold; font-size:13px; margin-top:24px; }
+.auth-submit:disabled { opacity:.45; cursor:not-allowed; }
+.auth-card .auth-switch { text-align:center; font-size:12px; margin-top:25px; }
+.auth-switch a { color:#ffd0e5; text-decoration:underline; }
+.auth-card .auth-local { border-top:1px solid #ffffff17; padding-top:20px; font-size:11px; }
+.auth-notice,.auth-error { padding:14px; background:#b5ebcc0c; border:1px solid #b5ebcc40; border-radius:10px; color:#c7ecd9!important; font-size:12px!important; line-height:1.7; margin-top:18px; }
+.auth-error { border-color:#f59ba763; color:#ffc2cb!important; background:#ff8baa0b; }
+.auth-back { display:flex; align-items:center; gap:8px; color:#cbb8d7; font-size:12px; margin-top:18px; }
+.account-links { display:flex; align-items:center; gap:12px; font-size:12px; }
+.account-links a:last-child { padding:11px 14px; border-radius:9px; background:#ffd0e0; color:#301b38; font-weight:bold; }
+.account-signout { padding:9px 12px; border:1px solid #ffffff33; border-radius:9px; background:#ffffff08; font-size:12px; }
+@media(max-width:800px) { .auth-main { gap:35px; padding:35px 24px 60px; } .auth-card { padding:26px; } }
+@media(max-width:650px) { .auth-main { grid-template-columns:1fr; padding:25px 20px 50px; } .auth-header { padding:20px; } .auth-story h1 { font-size:34px; } .auth-emblem { display:none; } .auth-story p { margin-top:15px; } .auth-card { padding:24px; } .account-links { gap:8px; font-size:11px; } .account-links a:last-child { padding:9px; } }

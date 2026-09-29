@@ -1,0 +1,40 @@
+.community-page { min-height:100vh; background:radial-gradient(ellipse at top,#423047,#15111f 55%); color:#fbf3fd; }
+.community-page header { max-width:1150px; margin:auto; padding:24px 28px; display:flex; justify-content:space-between; align-items:center; gap:15px; font-size:12px; color:#dfd0e8; }
+.community-page header>a,.community-page header nav { display:flex; align-items:center; gap:8px; }
+.community-page header nav { gap:20px; }
+.community-languages { display:flex; gap:5px; padding:4px; border:1px solid #ffffff33; border-radius:20px; }
+.community-languages a { padding:4px 7px; border-radius:14px; font-size:10px; }
+.community-languages a[aria-current=page] { background:#ffd1dc; color:#321c39; }
+.community-page main { max-width:1020px; margin:auto; padding:45px 24px 100px; }
+.community-hero { padding:38px 0 60px; }
+.community-hero h1,.community-detail h1 { font-size:clamp(36px,6vw,68px); line-height:1.07; letter-spacing:-2.5px; max-width:750px; margin:20px 0; }
+.community-hero>p { color:#d5c4dd; font-size:15px; line-height:1.8; max-width:630px; }
+.community-trust { display:flex; align-items:center; gap:8px; font-size:11px; color:#b7f5d9; margin-top:24px; }
+.community-filter { display:flex; gap:8px; flex-wrap:wrap; border-bottom:1px solid #ffffff20; padding-bottom:20px; }
+.community-filter a { border:1px solid #ffffff25; padding:10px 12px; font-size:11px; border-radius:20px; }
+.community-filter a[aria-current=page] { background:#ffd1db; color:#311f38; }
+.community-empty { padding:30px; border:1px dashed #d3b7d274; border-radius:13px; color:#d5bfd9; font-size:13px; line-height:1.7; }
+.community-posts { display:grid; gap:14px; margin-top:23px; }
+.community-posts article,.community-detail { padding:25px; background:#271d31; border:1px solid #ffffff1b; border-radius:14px; }
+.community-post-meta { display:flex; gap:12px; flex-wrap:wrap; font-size:10px; color:#f2b6d0; text-transform:uppercase; letter-spacing:1px; }
+.community-post-meta time { margin-left:auto; color:#aa9bae; }
+.community-posts h2 { font-size:20px; margin:16px 0 8px; }
+.community-posts article>p,.community-detail>p { color:#d1c4da; line-height:1.8; font-size:13px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.community-posts article>a,.community-detail>a,.community-hero>a { display:inline-flex; align-items:center; gap:7px; color:#b8f3d9; font-size:12px; margin:8px 0; }
+.community-post-footer { border-top:1px solid #ffffff17; padding-top:17px; margin-top:18px; display:flex; align-items:center; justify-content:space-between; gap:16px; color:#a99cb5; font-size:11px; }
+.community-post-footer>div { display:flex; gap:8px; }
+.community-post-footer button { background:#ffffff13; border-radius:8px; padding:8px 10px; color:#d4b9d8; font-size:10px; }
+.community-compose { margin-top:80px; scroll-margin-top:30px; }
+.community-compose h2 { font-size:32px; margin:15px 0; }
+.community-compose>p { color:#c7b6d2; font-size:13px; line-height:1.7; }
+.community-compose form { display:grid; gap:18px; margin-top:25px; padding:27px; background:#241b2f; border:1px solid #ffffff24; border-radius:15px; }
+.community-form-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.community-compose label { display:grid; gap:7px; font-size:12px; color:#e6d4eb; }
+.community-compose input:not([type=checkbox]),.community-compose select,.community-compose textarea { display:block; width:100%; background:#130f1d; color:#fff; border:1px solid #ffffff37; padding:11px; border-radius:8px; font:inherit; font-size:13px; }
+.community-compose .source-hint { color:#ac9bb8; font-size:11px; margin:0; }
+.community-compose .spoiler-check { display:flex; flex-direction:row; align-items:center; }
+.community-submit { display:flex; align-items:center; justify-content:center; gap:9px; background:#ffd1dc; color:#321c39; padding:13px 20px; border-radius:9px; font-size:12px; font-weight:bold; justify-self:start; }
+.community-detail { margin-top:40px; }
+.community-detail>span { color:#aaa; font-size:11px; }
+.community-detail>a { margin-left:20px; }
+@media(max-width:620px) { .community-page header>span { display:none; } .community-page main { padding:25px 18px 60px; } .community-form-row { grid-template-columns:1fr; } .community-compose form { padding:20px; } }

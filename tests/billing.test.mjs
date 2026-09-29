@@ -4,9 +4,10 @@ import { planFor, periodEnd, matchesFirstPayment, matchesRenewal } from "../src/
 import { hasActiveSubscription } from "../src/lib/auth/policy.ts";
 
 test("checkout amounts come from the displayed EUR and USD plans", () => {
-  assert.deepEqual(planFor("EUR", "monthly"), {currency:"EUR",interval:"monthly",cents:499,value:"4.99",mollieInterval:"1 month"});
+  assert.deepEqual(planFor("EUR", "monthly"), {currency:"EUR",interval:"monthly",cents:499,value:"4.99",mollieInterval:"1 month",method:"creditcard"});
   assert.equal(planFor("USD", "annual")?.value, "49.90");
-  assert.equal(planFor("BRL", "monthly"), null);
+  assert.deepEqual(planFor("BRL", "monthly"), {currency:"BRL",interval:"monthly",cents:1990,value:"19.90",mollieInterval:"1 month",method:"paypal"});
+  assert.equal(planFor("GBP", "monthly"), null);
   assert.equal(planFor("EUR", "weekly"), null);
 });
 
@@ -34,6 +35,8 @@ test("renewal cannot claim another subscription or an underpaid currency", () =>
   assert.equal(matchesRenewal(payment,sub),true);
   assert.equal(matchesRenewal({...payment,subscriptionId:"sub_other"},sub),false);
   assert.equal(matchesRenewal({...payment,amount:{currency:"EUR",value:"49.90"}},sub),false);
+  const brl={...sub,currency:"BRL",interval:"monthly"};
+  assert.equal(matchesRenewal({...payment,amount:{currency:"BRL",value:"19.90"}},brl),true);
 });
 
 test("Pro access needs Mollie-backed paid time; cancellation ends renewal but not paid access", () => {

@@ -1,15 +1,15 @@
 import { prices } from "../pricing.ts";
 
-export type PaidCurrency = "EUR" | "USD";
+export type PaidCurrency = "EUR" | "USD" | "BRL";
 export type BillingInterval = "monthly" | "annual";
 export type CheckoutRecord = { id:string; customer_id:string; payment_id:string|null; currency:PaidCurrency; interval:BillingInterval; amount_cents:number };
 export type SubscriptionRecord = { mollie_subscription_id:string; mollie_customer_id:string; currency:PaidCurrency; interval:BillingInterval };
 export type MolliePayment = { id:string; status:string; sequenceType?:string; customerId?:string; subscriptionId?:string; amount:{currency:string;value:string}; metadata?:unknown; paidAt?:string|null; amountRefunded?:{value:string}|null; amountChargedBack?:{value:string}|null };
 
 export function planFor(currency:unknown, interval:unknown) {
-  if ((currency!=="EUR"&&currency!=="USD") || (interval!=="monthly"&&interval!=="annual")) return null;
+  if ((currency!=="EUR"&&currency!=="USD"&&currency!=="BRL") || (interval!=="monthly"&&interval!=="annual")) return null;
   const cents=prices[currency][interval];
-  return {currency,interval,cents,value:(cents/100).toFixed(2),mollieInterval:interval==="monthly"?"1 month":"12 months"} as const;
+  return {currency,interval,cents,value:(cents/100).toFixed(2),mollieInterval:interval==="monthly"?"1 month":"12 months",method:currency==="BRL"?"paypal":"creditcard"} as const;
 }
 
 export function periodEnd(iso:string, interval:BillingInterval):string {

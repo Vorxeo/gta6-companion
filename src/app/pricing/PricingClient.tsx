@@ -8,7 +8,7 @@ import { prices, formatPrice, pricingCopy, type Currency } from "@/lib/pricing";
 import { startCheckout } from "./actions";
 import "./pricing.css";
 
-export default function Pricing({available,terms,privacy,error}: {available:boolean;terms:string;privacy:string;error:string}) {
+export default function Pricing({available,brlAvailable,terms,privacy,error}: {available:boolean;brlAvailable:boolean;terms:string;privacy:string;error:string}) {
   const [locale, setLocale] = useState<Locale>("en");
   const [currency, setCurrency] = useState<Currency>("USD");
   const [annual, setAnnual] = useState(false);
@@ -24,7 +24,7 @@ export default function Pricing({available,terms,privacy,error}: {available:bool
       if (preference === "true" || preference === "false") animate = preference === "true";
     } catch { /* Pricing remains usable without storage. */ }
     setLocale(language);
-    setCurrency(language === "en" ? "USD" : "EUR");
+    setCurrency(language === "pt-BR" ? "BRL" : language === "en" ? "USD" : "EUR");
     setMotion(animate);
     setReady(true);
   }, []);
@@ -34,6 +34,7 @@ export default function Pricing({available,terms,privacy,error}: {available:bool
   }, [locale, ready]);
   const t = pricingCopy[locale];
   const price = prices[currency][annual ? "annual" : "monthly"];
+  const canCheckout = available && (currency !== "BRL" || brlAvailable);
   const icons = [Cloud, Route, Users];
   return (
     <div className={`pricing-page app ${motion ? "motion-enabled" : "motion-off"}`}>
@@ -81,13 +82,14 @@ export default function Pricing({available,terms,privacy,error}: {available:bool
             <h2>Companion <em>Pro</em></h2><p className="plan-description">{t.proDesc}</p>
             <div className="plan-price" aria-live="polite"><strong>{formatPrice(price, currency, locale)}</strong><span>{annual ? t.perYear : t.perMonth}</span></div>
             <p className="price-detail">{annual ? t.annualNote : t.monthlyNote}</p>
+            {currency === "BRL" && <p className="price-detail">{t.brlMethod}</p>}
             <form action={startCheckout} className="pricing-checkout">
               <input type="hidden" name="currency" value={currency}/><input type="hidden" name="interval" value={annual?"annual":"monthly"}/>
               <input type="hidden" name="locale" value={locale}/>
-              {available && currency!=="BRL" && <label className="pricing-consent"><input type="checkbox" name="consent" required/>{t.consent}</label>}
+              {canCheckout && <label className="pricing-consent"><input type="checkbox" name="consent" required/>{t.consent}</label>}
               {terms && privacy && <p className="pricing-legal"><a href={terms} target="_blank" rel="noopener noreferrer">{t.terms}</a> · <a href={privacy} target="_blank" rel="noopener noreferrer">{t.privacy}</a></p>}
-              <button className="plan-cta pro-cta" type="submit" disabled={!available || currency==="BRL"}>{t.proCta}<ArrowUpRight size={18}/></button>
-              {!available && <p className="pricing-checkout-status">{t.unavailable}</p>}{currency==="BRL" && <p className="pricing-checkout-status">{t.brlOnly}</p>}
+              <button className="plan-cta pro-cta" type="submit" disabled={!canCheckout}>{t.proCta}<ArrowUpRight size={18}/></button>
+              {!available && <p className="pricing-checkout-status">{t.unavailable}</p>}{currency==="BRL" && !brlAvailable && <p className="pricing-checkout-status">{t.brlOnly}</p>}
             </form>
             <h3>{t.planned}</h3><ul>{t.proFeatures.map(f => <li key={f}><Plus size={17}/>{f}</li>)}</ul>
             <p className="plan-footnote">{t.proNote}</p>

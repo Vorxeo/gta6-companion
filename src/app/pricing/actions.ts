@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { authClient, siteOrigin } from "@/lib/auth/server";
 import { hasActiveSubscription } from "@/lib/auth/policy";
-import { billingAdmin, billingConfigured, mollie, syncPayment, webhookUrl } from "@/lib/billing/server";
+import { billingAdmin, checkoutConfiguredFor, mollie, recurringMethodAvailable, syncPayment, webhookUrl } from "@/lib/billing/server";
 import { planFor } from "@/lib/billing/model";
 
 type MollieCustomer = { id: string };
@@ -15,9 +15,9 @@ function mollieCheckoutUrl(href: string | undefined) {
   return url.toString();
 }
 export async function startCheckout(form: FormData) {
-  if (!billingConfigured()) redirect("/pricing?error=unavailable");
   const plan = planFor(form.get("currency"), form.get("interval"));
   if (!plan || form.get("consent") !== "on") redirect("/pricing?error=invalid");
+  if (!checkoutConfiguredFor(plan.currency)) redirect("/pricing?error=unavailable");
   const client = await authClient();
   if (!client) redirect("/sign-in?next=pricing");
   const { data: { user }, error } = await client.auth.getUser();
@@ -28,6 +28,7 @@ export async function startCheckout(form: FormData) {
   if (hasActiveSubscription(entitlement) || entitlement?.mollie_subscription_id) redirect("/billing");
   let destination = "/pricing?error=checkout";
   try {
+    if (!await recurringMethodAvailable(plan.currency, plan.value, plan.method)) throw new Error("Payment method unavailable");
     const admin = billingAdmin();
     const { data: existing, error: existingError } = await admin.from("billing_checkouts")
       .select("id,payment_id,status").eq("user_id", user.id).in("status", ["creating","open"]).maybeSingle();
@@ -59,7 +60,7 @@ export async function startCheckout(form: FormData) {
     const locale = form.get("locale") === "es" ? "es_ES" : form.get("locale") === "pt-BR" ? "pt_PT" : "en_US";
     const payment = await mollie<MollieCheckout>("/payments", { method: "POST", idempotencyKey: `${checkoutId}:payment`,
       body: { amount: { currency: plan.currency, value: plan.value }, customerId: customer.mollie_customer_id,
-        sequenceType: "first", method: "creditcard", locale,
+        sequenceType: "first", method: plan.method, locale,
         description: `VI Companion Pro — ${plan.interval}`,
         redirectUrl: `${siteOrigin()}/billing/return?checkout=${checkoutId}`,
         webhookUrl: webhookUrl(), metadata: { checkout_id: checkoutId } } });

@@ -20,6 +20,9 @@ export function billingConfigured() {
       new URL(process.env.MOLLIE_PRIVACY_URL || "").protocol === "https:";
   } catch { return false; }
 }
+export function checkoutConfiguredFor(currency: string) {
+  return billingConfigured() && (currency !== "BRL" || process.env.MOLLIE_BRL_ENABLED === "true");
+}
 
 export function billingAdmin() {
   if (!billingOperational()) throw new Error("Billing unavailable");
@@ -43,6 +46,16 @@ export async function mollie<T>(path: string, init: { method?: "POST" | "DELETE"
   if (!response.ok) throw new Error(`Mollie HTTP ${response.status}`);
   if (init.method === "DELETE") return undefined as T;
   return response.json() as Promise<T>;
+}
+
+export async function recurringMethodAvailable(currency: string, value: string, method: "creditcard" | "paypal") {
+  const check = async (sequenceType: "first" | "recurring") => {
+    const query = new URLSearchParams({ sequenceType, "amount[currency]": currency, "amount[value]": value });
+    const result = await mollie<{ _embedded?: { methods?: Array<{ id: string }> } }>(`/methods?${query}`);
+    return result._embedded?.methods?.some(item => item.id === method) === true;
+  };
+  const [first, recurring] = await Promise.all([check("first"), check("recurring")]);
+  return first && recurring;
 }
 
 type MollieSubscription = { id: string; status: string };
@@ -84,6 +97,7 @@ export async function syncPayment(paymentId: string) {
       const created = await mollie<MollieSubscription>(`/customers/${encodeURIComponent(checkout.customer_id)}/subscriptions`, {
         method: "POST", idempotencyKey: `${checkout.id}:subscription`,
         body: { amount: { currency: plan.currency, value: plan.value }, interval: plan.mollieInterval,
+          method: plan.method,
           startDate: end.slice(0, 10), description: "VI Companion Pro", webhookUrl: webhookUrl(),
           metadata: { checkout_id: checkout.id } },
       });

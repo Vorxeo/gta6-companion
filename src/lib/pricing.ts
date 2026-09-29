@@ -25,11 +25,11 @@ const en = {
   faq:"Good to know",questions:[
     {q:"What do I get with Pro?",a:"Personal workspace, backups, Arcade, Creator Lab and community publishing. Public guides and reading stay free."},
     {q:"How does billing work?",a:"Choose monthly or yearly billing in EUR or USD. Your plan renews automatically until you cancel. Cancel from Billing; access continues until the paid period ends."},
-    {q:"Can I pay in Brazilian reais?",a:"BRL is shown as a price preview only. Current Mollie checkout is configured for EUR and USD. Choose either currency to subscribe."},
+    {q:"Can I pay in Brazilian reais?",a:"BRL subscriptions are prepared through PayPal. They open after PayPal recurring is enabled and verified on the Mollie profile."},
     {q:"Do I need to own GTA VI?",a:"No. This independent fan project does not include the game or access to it."},
     {q:"What happens if checkout is unavailable?",a:"No charge is made. Checkout requires a configured Mollie account, secure webhook, legal pages and database migration before it can open."}],
   endTitle:"Explore first. Unlock when ready.",endText:"The public guide, community reading and cinematic experience are open to everyone.",footer:"Independent fan project. Not affiliated with Rockstar Games.",
-  consent:"I agree to recurring billing at the price and interval shown above and have read the terms and privacy policy.",terms:"Terms",privacy:"Privacy",unavailable:"Secure checkout is being prepared. No payment is taken yet.",brlOnly:"BRL is a price preview. Select EUR or USD to check out.",error:"Checkout could not start. Please try again later.",billingLink:"Manage billing",plannedStatus:"Planned",
+  consent:"I agree to recurring billing at the price and interval shown above and have read the terms and privacy policy.",terms:"Terms",privacy:"Privacy",unavailable:"Secure checkout is being prepared. No payment is taken yet.",brlOnly:"BRL checkout via PayPal is not enabled yet.",brlMethod:"BRL renewals use PayPal, subject to Mollie profile approval.",error:"Checkout could not start. Please try again later.",billingLink:"Manage billing",plannedStatus:"Planned",
 };
 type Copy = typeof en;
 const pt: Copy = {
@@ -51,11 +51,11 @@ const pt: Copy = {
   faq:"É bom saber",questions:[
     {q:"O que recebo com o Pro?",a:"Workspace pessoal, backups, Arcade, Creator Lab e publicação na comunidade. Guia e leitura continuam gratuitos."},
     {q:"Como funciona a cobrança?",a:"Escolha cobrança mensal ou anual em EUR ou USD. O plano renova automaticamente até você cancelar. Cancele na página Cobrança; o acesso permanece até o fim do período pago."},
-    {q:"Posso pagar em reais?",a:"O valor em BRL é apenas uma prévia. O checkout Mollie atual está configurado em EUR e USD. Escolha uma dessas moedas para assinar."},
+    {q:"Posso pagar em reais?",a:"A assinatura em BRL está preparada via PayPal. Ela abre após habilitar e verificar a recorrência PayPal no perfil Mollie."},
     {q:"Preciso ter GTA VI?",a:"Não. Este projeto independente de fãs não inclui o jogo nem acesso a ele."},
     {q:"E se o checkout estiver indisponível?",a:"Não há cobrança. É preciso configurar a conta Mollie, webhook seguro, páginas legais e migração do banco para abrir o checkout."}],
   endTitle:"Explore primeiro. Desbloqueie quando quiser.",endText:"Guia público, leitura da comunidade e cena cinematográfica estão abertos a todos.",footer:"Projeto independente de fãs. Sem afiliação com a Rockstar Games.",
-  consent:"Concordo com a cobrança recorrente pelo preço e período acima e li os termos e a política de privacidade.",terms:"Termos",privacy:"Privacidade",unavailable:"O checkout seguro está sendo preparado. Nenhum pagamento é cobrado agora.",brlOnly:"BRL é só uma prévia. Selecione EUR ou USD para pagar.",error:"Não foi possível iniciar o checkout. Tente novamente mais tarde.",billingLink:"Gerenciar cobrança",plannedStatus:"Planejado",
+  consent:"Concordo com a cobrança recorrente pelo preço e período acima e li os termos e a política de privacidade.",terms:"Termos",privacy:"Privacidade",unavailable:"O checkout seguro está sendo preparado. Nenhum pagamento é cobrado agora.",brlOnly:"O checkout em BRL via PayPal ainda não está habilitado.",brlMethod:"A renovação em BRL usa PayPal, sujeita à aprovação do perfil Mollie.",error:"Não foi possível iniciar o checkout. Tente novamente mais tarde.",billingLink:"Gerenciar cobrança",plannedStatus:"Planejado",
 };
 const es: Copy = {
   nav:"Planes",back:"Volver a VI Companion",language:"Idioma",currency:"Moneda",eyebrow:"DESBLOQUEA TU MUNDO",title:"Tu viaje.",accent:"Sin límites.",
@@ -76,11 +76,11 @@ const es: Copy = {
   faq:"Conviene saberlo",questions:[
     {q:"¿Qué incluye Pro?",a:"Workspace personal, copias, Arcade, Creator Lab y publicaciones en la comunidad. La guía y la lectura siguen siendo gratis."},
     {q:"¿Cómo funciona el cobro?",a:"Elige cobro mensual o anual en EUR o USD. El plan se renueva automáticamente hasta que lo canceles. Cancela en Facturación; el acceso continúa hasta el fin del periodo pagado."},
-    {q:"¿Puedo pagar en reales brasileños?",a:"BRL es solo una vista previa. El pago con Mollie está configurado en EUR y USD. Elige una de esas monedas para suscribirte."},
+    {q:"¿Puedo pagar en reales brasileños?",a:"Las suscripciones en BRL están preparadas mediante PayPal. Se habilitarán tras verificar los cobros recurrentes en el perfil Mollie."},
     {q:"¿Necesito tener GTA VI?",a:"No. Este proyecto independiente de fans no incluye el juego ni acceso a él."},
     {q:"¿Qué pasa si el pago no está disponible?",a:"No se cobra nada. Hay que configurar Mollie, webhook seguro, páginas legales y migración de base de datos antes de habilitarlo."}],
   endTitle:"Explora primero. Desbloquea cuando quieras.",endText:"La guía pública, la lectura de la comunidad y la escena cinematográfica están abiertas a todos.",footer:"Proyecto independiente de fans. Sin afiliación con Rockstar Games.",
-  consent:"Acepto los cobros recurrentes por el precio y periodo mostrados y he leído los términos y la política de privacidad.",terms:"Términos",privacy:"Privacidad",unavailable:"El pago seguro se está preparando. No se cobra nada todavía.",brlOnly:"BRL es solo una vista previa. Selecciona EUR o USD para pagar.",error:"No se pudo iniciar el pago. Inténtalo más tarde.",billingLink:"Gestionar facturación",plannedStatus:"Previsto",
+  consent:"Acepto los cobros recurrentes por el precio y periodo mostrados y he leído los términos y la política de privacidad.",terms:"Términos",privacy:"Privacidad",unavailable:"El pago seguro se está preparando. No se cobra nada todavía.",brlOnly:"El pago en BRL mediante PayPal aún no está habilitado.",brlMethod:"La renovación en BRL usa PayPal, sujeta a la aprobación del perfil Mollie.",error:"No se pudo iniciar el pago. Inténtalo más tarde.",billingLink:"Gestionar facturación",plannedStatus:"Previsto",
 };
 export const pricingCopy: Record<Locale, Copy> = {en,es,"pt-BR":pt};
 export const pricingLabels: Record<Locale,string> = {en:"Plans",es:"Planes","pt-BR":"Planos"};

@@ -1,39 +1,56 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+
+import {useEffect,useRef,useState} from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Gamepad2 } from "lucide-react";
-import { arcadeCopy } from "@/lib/arcade-copy";
-import { browserLocale, isLocale, type Locale } from "@/lib/i18n";
-type World={x:number;y:number;px:number;py:number;dx:number;dy:number;policeX:number;policeY:number;carrying:boolean;score:number;remaining:number;running:boolean;last:number};
-const initial=():World=>({x:80,y:100,px:290,py:230,dx:460,dy:330,policeX:500,policeY:90,carrying:false,score:0,remaining:75,running:false,last:0});
-const clamp=(x:number,max:number)=>Math.max(14,Math.min(max-14,x));
-function draw(ctx:CanvasRenderingContext2D,w:World){
-  ctx.clearRect(0,0,600,420);ctx.fillStyle="#131d2b";ctx.fillRect(0,0,600,420);
-  ctx.fillStyle="#273443";for(let x=0;x<600;x+=100){ctx.fillRect(x+18,0,42,420);}for(let y=0;y<420;y+=105){ctx.fillRect(0,y+24,600,38);}
-  for(let x=0;x<600;x+=100)for(let y=0;y<420;y+=105){ctx.fillStyle=(x+y)%3===0?"#43314a":"#34354b";ctx.fillRect(x+64,y+65,32,36);ctx.fillStyle="#ffd3a68c";ctx.fillRect(x+70,y+70,5,7);}
-  ctx.strokeStyle="#ddbcb834";ctx.setLineDash([8,10]);for(let x=39;x<600;x+=100){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,420);ctx.stroke();}for(let y=43;y<420;y+=105){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(600,y);ctx.stroke();}ctx.setLineDash([]);
-  const circle=(x:number,y:number,r:number,color:string,glow=0)=>{ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.shadowColor=color;ctx.shadowBlur=glow;ctx.fill();ctx.shadowBlur=0;};
-  if(!w.carrying){circle(w.px,w.py,16,"#ffd18c",24);ctx.fillStyle="#423546";ctx.fillRect(w.px-7,w.py-6,14,12);}else{circle(w.dx,w.dy,21,"#9df1d5",30);circle(w.x,w.y-16,5,"#ffd18c",10);}
-  circle(w.policeX,w.policeY,13,"#859dff",15);ctx.fillStyle="#fff";ctx.font="bold 12px sans-serif";ctx.fillText("★",w.policeX-6,w.policeY+4);
-  circle(w.x,w.y,14,"#ff8fb6",21);ctx.fillStyle="#2c1f3c";ctx.fillRect(w.x-8,w.y-5,16,10);ctx.fillStyle="#f7efff";ctx.font="bold 10px sans-serif";ctx.fillText("VI",w.x-6,w.y+3);
+import {ArrowLeft,ArrowUpRight,Trophy} from "lucide-react";
+import {browserLocale,isLocale,type Locale} from "@/lib/i18n";
+import {arcadeCopy} from "@/lib/arcade-copy";
+
+type Entry={name:string;score:number;date:string};
+const scoreKey="neon-getaway-godot-local-v1";
+
+function readBoard(key:string):Entry[]{
+  try{
+    const parsed:unknown=JSON.parse(localStorage.getItem(key)||"[]");
+    if(!Array.isArray(parsed))return[];
+    return parsed.filter((item):item is Entry=>!!item&&typeof item.name==="string"&&item.name.length<=16&&Number.isInteger(item.score)&&item.score>=0&&item.score<=2000&&typeof item.date==="string").slice(0,10);
+  }catch{return[];}
 }
-export default function ArcadeGame({userId}: {userId:string}){
-  const [locale,setLocale]=useState<Locale>("en"),[ready,setReady]=useState(false),[stats,setStats]=useState({score:0,time:75,running:false,ended:false}),[best,setBest]=useState(0);
-  const canvas=useRef<HTMLCanvasElement>(null),world=useRef<World>(initial()),keys=useRef(new Set<string>()),frame=useRef(0);
+
+export default function ArcadeGame({userId,demo=false}:{userId:string;demo?:boolean}){
+  const boardKey=`${scoreKey}:${userId}`;
+  const [locale,setLocale]=useState<Locale>("en");
+  const [board,setBoard]=useState<Entry[]>([]);
+  const [score,setScore]=useState<number|null>(null);
+  const [alias,setAlias]=useState("");
+  const frame=useRef<HTMLIFrameElement>(null);
+  useEffect(()=>{let selected=browserLocale(navigator.language);try{const saved=localStorage.getItem("vi-language");if(isLocale(saved))selected=saved;}catch{}setLocale(selected);setBoard(readBoard(boardKey));},[boardKey]);
+  useEffect(()=>{
+    const onScore=(event:MessageEvent)=>{
+      if(event.origin!==window.location.origin||event.source!==frame.current?.contentWindow)return;
+      const data=event.data as {source?:unknown;type?:unknown;score?:unknown};
+      if(data?.source!=="neon-getaway"||data.type!=="score"||!Number.isInteger(data.score)||typeof data.score!=="number"||data.score<0||data.score>2000)return;
+      setScore(data.score);
+    };
+    window.addEventListener("message",onScore);
+    return()=>window.removeEventListener("message",onScore);
+  },[]);
   const t=arcadeCopy[locale];
-  useEffect(()=>{let value=browserLocale(navigator.language);try{const saved=localStorage.getItem("vi-language");if(isLocale(saved))value=saved;setBest(Number(localStorage.getItem(`vi-arcade-best:${userId}`)||0)||0);}catch{}setLocale(value);setReady(true);},[userId]);
-  useEffect(()=>{const down=(e:KeyboardEvent)=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();keys.current.add(e.key.toLowerCase());};const up=(e:KeyboardEvent)=>keys.current.delete(e.key.toLowerCase());window.addEventListener("keydown",down);window.addEventListener("keyup",up);return()=>{window.removeEventListener("keydown",down);window.removeEventListener("keyup",up);cancelAnimationFrame(frame.current);};},[]);
-  useEffect(()=>{const ctx=canvas.current?.getContext("2d");if(ctx)draw(ctx,world.current);},[]);
-  const start=()=>{world.current=initial();world.current.running=true;world.current.last=performance.now();setStats({score:0,time:75,running:true,ended:false});cancelAnimationFrame(frame.current);const tick=(now:number)=>{
-    const w=world.current;if(!w.running)return;const dt=Math.min(.04,(now-w.last)/1000);w.last=now;w.remaining=Math.max(0,w.remaining-dt);
-    const k=keys.current;const x=Number(k.has("arrowright")||k.has("d"))-Number(k.has("arrowleft")||k.has("a"));const y=Number(k.has("arrowdown")||k.has("s"))-Number(k.has("arrowup")||k.has("w"));const m=Math.hypot(x,y)||1;w.x=clamp(w.x+x/m*170*dt,600);w.y=clamp(w.y+y/m*170*dt,420);
-    const angle=Math.atan2(w.y-w.policeY,w.x-w.policeX);w.policeX=clamp(w.policeX+Math.cos(angle)*65*dt,600);w.policeY=clamp(w.policeY+Math.sin(angle)*65*dt,420);
-    if(Math.hypot(w.x-w.policeX,w.y-w.policeY)<25){w.carrying=false;w.x=80;w.y=100;w.policeX=500;w.policeY=90;}
-    if(!w.carrying&&Math.hypot(w.x-w.px,w.y-w.py)<29)w.carrying=true;
-    if(w.carrying&&Math.hypot(w.x-w.dx,w.y-w.dy)<33){w.score++;w.carrying=false;w.px=100+((w.score*131)%400);w.py=70+((w.score*71)%250);w.dx=100+((w.score*203)%400);w.dy=70+((w.score*121)%250);}
-    if(w.remaining===0||w.score>=5){w.running=false;setStats({score:w.score,time:Math.ceil(w.remaining),running:false,ended:true});if(w.score>best){setBest(w.score);try{localStorage.setItem(`vi-arcade-best:${userId}`,String(w.score));}catch{}}}
-    else {setStats(current => current.score === w.score && current.time === Math.ceil(w.remaining) ? current : {score:w.score,time:Math.ceil(w.remaining),running:true,ended:false});frame.current=requestAnimationFrame(tick);}const ctx=canvas.current?.getContext("2d");if(ctx)draw(ctx,w);
-  };frame.current=requestAnimationFrame(tick);};
-  const touch=(key:string,press:boolean)=>{if(press)keys.current.add(key);else keys.current.delete(key);};
-  return <div className="arcade-page"><header><Link href="/" className="arcade-logo">VI COMPANION ✦</Link><Link href="/" className="arcade-return"><ArrowLeft size={16}/>{t.back}</Link></header><main><span className="merged-kicker">{t.eyebrow}</span><h1>{t.title}</h1><p>{t.intro}</p><div className="arcade-score"><span>{t.delivered} <strong>{stats.score}/5</strong></span><span>{t.time} <strong>{stats.time}s</strong></span><span>{t.best} <strong>{best}</strong></span></div><div className="arcade-canvas"><canvas ref={canvas} width={600} height={420} role="img" aria-label={t.intro}/>{!stats.running&&<div className="arcade-overlay"><Gamepad2 size={38}/><h2>{stats.ended?(stats.score>=5?t.win:t.lose):t.goal}</h2><button onClick={start} disabled={!ready}>{stats.ended?t.restart:t.start}<ArrowUpRight size={18}/></button></div>}</div><div className="arcade-hints"><p>{t.move}</p><p>{stats.running?(world.current.carrying?t.drop:t.pickup):t.goal}</p></div><div className="arcade-touch" aria-label={t.move}><button onPointerDown={()=>touch("arrowup",true)} onPointerUp={()=>touch("arrowup",false)} onPointerCancel={()=>touch("arrowup",false)}>↑</button><div>{[["arrowleft","←"],["arrowdown","↓"],["arrowright","→"]].map(([key,label])=><button key={key} onPointerDown={()=>touch(key,true)} onPointerUp={()=>touch(key,false)} onPointerCancel={()=>touch(key,false)}>{label}</button>)}</div></div></main></div>;
+  const credits:Record<Locale,{character:string;cars:string}>={en:{character:"Character",cars:"Cars"},es:{character:"Personaje",cars:"Coches"},"pt-BR":{character:"Personagem",cars:"Carros"},nl:{character:"Personage",cars:"Auto's"}};
+  const save=()=>{
+    if(score===null||demo)return;
+    const name=alias.trim().replace(/[^\p{L}\p{N} _-]/gu,"").slice(0,16);
+    if(!name)return;
+    const next=[...board,{name,score,date:new Date().toISOString().slice(0,10)}].sort((a,b)=>b.score-a.score).slice(0,10);
+    try{localStorage.setItem(boardKey,JSON.stringify(next));setBoard(next);setAlias("");setScore(null);}catch{}
+  };
+  return <div className="arcade-page heist-page"><header><Link href="/" className="arcade-logo">VI COMPANION ✦</Link><Link href="/" className="arcade-return"><ArrowLeft size={16}/>{t.back}</Link></header><main>
+    <div className="heist-heading"><div><span className="merged-kicker">{t.eyebrow}</span><h1>{t.title}</h1><p>{demo?t.demoIntro:t.intro}</p></div><span className="heist-edition">GODOT 4.5 / ORIGINAL 3D</span></div>
+    <div className="heist-layout"><section className="heist-stage godot-stage" aria-label={t.title}>
+      <iframe ref={frame} title="Neon Getaway Godot 3D" src={`${demo?"/arcade-godot":"/arcade/build"}/index.html?lang=${encodeURIComponent(locale)}`} allow="autoplay; fullscreen" loading="eager"/>
+    </section><aside className="heist-side"><div className="heist-side-card"><span className="merged-kicker">{t.contract}</span><h2>{demo?t.demoGoal:t.goal}</h2><p>{t.contractText}</p><p>{t.move}</p><p>{demo?t.demoBoard:t.localBoard}</p>{demo&&<Link className="heist-pro-link" href="/pricing">{t.unlockPro} <ArrowUpRight size={14}/></Link>}</div>
+    <div className="heist-side-card heist-board"><div className="heist-board-title"><Trophy size={20}/><h2>{t.leaderboard}</h2></div><small>{t.localBoard}</small>{demo?<Link className="heist-pro-link" href="/pricing">{t.unlockPro} ↗</Link>:<><ol>{board.length?board.map((entry,i)=><li key={`${entry.date}-${i}`}><b>{String(i+1).padStart(2,"0")}</b><span>{entry.name}</span><strong>{entry.score}</strong></li>):<li className="heist-empty">{t.noScores}</li>}</ol>{score!==null&&<div className="heist-save"><input aria-label={t.alias} maxLength={16} placeholder={t.alias} value={alias} onChange={event=>setAlias(event.target.value)}/><button onClick={save}>{t.save} {score}</button></div>}</>}</div></aside></div>
+    <p className="heist-disclaimer">{demo?t.demoNote:t.fanNote} <Link href="/community">{t.community} ↗</Link></p>
+    <p className="heist-credits">{credits[locale].character}: <a href="https://github.com/gdquest-demos/godot-3d-mannequin" target="_blank" rel="noopener noreferrer">GDQuest, Luciano Muñoz &amp; contributors (CC BY 4.0)</a> · {credits[locale].cars}: <a href="https://kenney.nl/assets/car-kit" target="_blank" rel="noopener noreferrer">Kenney (CC0)</a></p>
+  </main></div>;
 }

@@ -1,0 +1,3 @@
+Mannequiny 0.3.0 by GDQuest, Luciano Muñoz, and contributors. Licensed CC BY 4.0: https://creativecommons.org/licenses/by/4.0/. Source: https://github.com/gdquest-demos/godot-3d-mannequin (godot/assets/3d/mannequiny/mannequiny-0.3.0.glb). Changes: imported into GTA VI Companion Godot prototype; no source mesh edits.
+
+Kenney Car Kit 3.1 3D car models (race, race-future, sedan-sports, suv-luxury), created/distributed by Kenney, CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/. Source copy: https://github.com/Arslan12216775/kenney_car-kit (Models/GLB format; License.txt). Imported and scaled in the Godot prototype; no source mesh edits.

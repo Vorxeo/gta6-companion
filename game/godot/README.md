@@ -1,0 +1,13 @@
+# Neon Getaway — Godot source
+
+This is the source for the Godot 4.5.2 game embedded at `/arcade/demo` and `/arcade`. The public `Web Demo` export lives in `public/arcade-godot/` and has one contract. The `Web Pro` pack and HTML are in `game/godot/pro-web/` and are served through `/arcade/build/[asset]` after a server-side subscription check; they have three contracts. Re-export both variants after changing the scene or GDScript. The native HUD reads `lang=en|es|pt-BR|nl` from the URL.
+
+Open `project.godot` in Godot 4.5.2 and run the main scene. Controls: WASD or arrows to move/drive, E to enter/exit, Space to brake, R to restart. The timer begins with the first control input. The scene includes an animated human mannequin, fictional cars, moving traffic, gardens, palms, and a three-car delivery loop. It remains a prototype: steering, collision, art, sound, mobile controls, and mission variety need further production work.
+
+The model in `assets/mannequiny.glb` is from [GDQuest's Open 3D Mannequin](https://github.com/gdquest-demos/godot-3d-mannequin) under CC BY 4.0. Car meshes are from Kenney's Car Kit 3.1 under CC0; names, mission and environment layout are original. See `assets/ATTRIBUTION.md`. The editor add-on in `addons/godot_ai/` came from the user-provided archive and is MIT-licensed. It is excluded from web exports.
+
+Godot AI MCP is enabled locally in Codex via `uvx` and was verified against a live Godot 4.5.2 editor (`editor_state` returned ready). Portable Godot, `uvx`, server logs and export templates live in ignored `.tooling/` in the repository root. On a different computer, install Godot 4.5.2, its Web export templates, and [godot-ai](https://github.com/hi-godot/godot-ai) separately. The MCP registration points to this machine's `.tooling` path and is not portable.
+
+For a local export, use the `Web Demo` preset to `public/arcade-godot/index.html` and the `Web Pro` preset to a temporary directory. Copy only the resulting Pro `index.html` and `index.pck` to `game/godot/pro-web/`. The protected route serves the common engine files from the public export. The project uses the GL Compatibility renderer and non-threaded Web template so the page can be embedded without cross-origin isolation. The 38 MB WebAssembly runtime is a material download for mobile visitors.
+
+The browser leaderboard is local and unverified. The Pro package is behind a server subscription check, but any shipped game client can be modified by a determined player. Do not use local scores for prizes or public rankings. A global leaderboard requires server-authoritative scoring and abuse controls.

@@ -1512,3 +1512,5 @@ footer > span {
 @keyframes panel-shimmer { to { background-position:100% 65%; } }
 @media(max-width:640px) { .hero .hero-tags span { font-size:9px; padding:8px 10px; min-height:32px; } .hero-bottom-signal { font-size:7px; } .ambient-city-sign { right:-8%; } .ambient-city-palm { opacity:.2; } }
 @media(prefers-reduced-motion:reduce) { .ambient-city *, .app .feature-card,.app .floating-chip,.home-pricing-teaser,.official-music { animation:none!important; } .app .tilt:hover,.hero .hero-tags span:hover { transform:none; } }
+.merged-demo-link{display:inline-flex;align-items:center;gap:10px;margin:23px 0 6px;padding:13px 19px;border-radius:11px;background:linear-gradient(110deg,#a1f7d8,#a2deee);color:#13252c;font-size:13px;font-weight:900;box-shadow:0 10px 35px #68eec540;transition:transform .25s,box-shadow .25s}
+.merged-demo-link:hover{transform:translateY(-3px);box-shadow:0 16px 42px #68eec566}

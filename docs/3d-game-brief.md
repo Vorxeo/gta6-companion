@@ -1,6 +1,6 @@
 # VI Companion: minijogo 3D (proposta para a fase de criação)
 
-**Estado:** conceito. Nenhuma build 3D foi produzida ou anunciada como recurso disponível.
+**Estado:** protótipo 3D feito em Godot 4.5.2 e exportado para Web. Está incorporado em `/arcade/demo` (um contrato público) e `/arcade` (três contratos num pacote entregue apenas após validação Pro no servidor). O código fonte está em `game/godot`.
 
 ## Experiência
 
@@ -21,7 +21,9 @@ O primeiro recorte jogável deve ter um bairro pequeno e detalhado, com ruas, ga
 
 ## Motor e integração
 
-**Unity 6/Web** é a primeira escolha para um jogo executado dentro do site. O projeto do jogo fica separado do Next.js; a build Web é publicada em uma rota Pro, carregada somente após a verificação da assinatura. O Next.js controla login, plano, idioma e contas; o jogo recebe somente um token de sessão de curta duração, nunca chaves Mollie ou Supabase de serviço. O servidor valida gravações de progresso.
+O protótipo usa **Godot 4.5.2 com exportação Web** incorporada no Next.js. O add-on Godot AI do arquivo fornecido pelo proprietário foi instalado no projeto e o MCP foi registrado e testado com o editor ativo. O ambiente local usa Godot e uvx portáteis em `.tooling/`. O humano animado vem do repositório público GDQuest Open 3D Mannequin (CC BY 4.0); os carros usam malhas CC0 do Kenney Car Kit. Há créditos em `game/godot/assets/ATTRIBUTION.md`. O mundo tem trânsito móvel e jardins, mas ainda precisa de produção visual, direção, áudio, controles móveis e otimização.
+
+O ranking atual é **local ao navegador** e explicitamente não verificado. Não usar as pontuações para prémios, recompensas ou reputação pública. Um ranking global exigirá simulação ou telemetria validada no servidor e proteção contra abuso, além de infraestrutura Supabase configurada.
 
 **Unreal 5/Pixel Streaming** é uma alternativa para fidelidade visual mais alta. Exige uma aplicação Unreal rodando em servidor com GPU e transmissão por WebRTC para cada sessão; custos e escalabilidade precisam ser medidos antes de escolher esse caminho. Não há conector MCP Unity/Unreal instalado nesta sessão. A máquina possui Unity 6 e Unreal 5.2; podemos usar scripts do editor/CLI quando a produção começar.
 
@@ -37,6 +39,6 @@ O jogo deve ter cidade, personagens, carros, nomes, marcas, músicas e efeitos p
 4. Só então ampliar o bairro, carros, missões e personalização.
 5. Integrar autenticação Pro, persistência e antifraude; fazer teste fechado antes da publicação.
 
-Não adicionar o jogo à lista de recursos já disponíveis nem cobrar por ele enquanto não houver uma build jogável e validada.
+A demo gratuita pode ser listada como protótipo jogável. O pacote Pro não está na pasta pública e o handler `/arcade/build/[asset]` exige conta confirmada e assinatura ativa para cada arquivo. O ranking atual é apenas local e manipulável. Antes de premiar jogadores ou divulgar ranking global, validar resultados no servidor e testar em dispositivos móveis. Não apresentar a build como jogo acabado nem como conteúdo oficial da Rockstar.
 
-Referências técnicas: [Unity Web](https://docs.unity.com/en-us/engine/6000.3/manual/platform-specific/webgl) e [Unreal Pixel Streaming](https://dev.epicgames.com/documentation/unreal-engine/pixel-streaming-in-unreal-engine).
+Referências técnicas: [Godot Web export](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html), [Godot AI](https://github.com/hi-godot/godot-ai), [Unity Web](https://docs.unity.com/en-us/engine/6000.3/manual/platform-specific/webgl) e [Unreal Pixel Streaming](https://dev.epicgames.com/documentation/unreal-engine/pixel-streaming-in-unreal-engine).

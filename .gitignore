@@ -1,5 +1,9 @@
 node_modules/
 .next/
 *.tsbuildinfo
+.npm-cache/
+.tooling/
+game/godot/.godot/
+game/godot/export/
 .env*
 !.env.example

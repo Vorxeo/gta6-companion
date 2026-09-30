@@ -19,3 +19,57 @@
 .arcade-touch>div { display:flex; gap:4px; }
 .arcade-touch button { width:52px; height:46px; border-radius:9px; background:#47314f; border:1px solid #ffb7d35c; color:#fff; font-size:18px; touch-action:none; }
 @media(min-width:850px) { .arcade-touch { display:none; } }
+
+.heist-page{background:radial-gradient(ellipse at 10% 6%,#70416b55,transparent 36%),radial-gradient(ellipse at 80% 34%,#22577355,transparent 42%),#100f21;min-height:100svh}
+.heist-page header{max-width:1480px}
+.heist-page main{max-width:1480px;padding-top:18px}
+.heist-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px}
+.heist-heading h1{font-size:clamp(52px,7vw,104px);margin:8px 0 5px;color:#ffe7f7;text-shadow:0 8px 35px #fb62ab66}
+.heist-heading p{max-width:650px;color:#d9cadd;line-height:1.6;margin:0}
+.heist-edition{font-size:10px;letter-spacing:2px;color:#99f7df;white-space:nowrap}
+.heist-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+.heist-stage{min-height:570px;position:relative;border:1px solid #ffb9da66;border-radius:20px;overflow:hidden;background:#10182a;box-shadow:0 30px 90px #03040d99,0 0 45px #f477bf22}
+.godot-stage{aspect-ratio:16/10;min-height:0}
+.godot-stage iframe{width:100%;height:100%;border:0;display:block;background:#151326}
+.heist-canvas,.heist-canvas canvas{width:100%;height:100%;display:block}
+.heist-canvas{position:absolute;inset:0}
+.heist-hud{position:absolute;left:16px;right:16px;top:16px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}
+.heist-hud span{display:inline-flex;align-items:center;gap:6px;padding:9px 12px;border:1px solid #ffffff3b;border-radius:9px;background:#0d1425c9;backdrop-filter:blur(9px);font-size:12px;font-weight:800;color:#fff}
+.heist-hud span:first-child{color:#8df9d9}
+.heist-mission{position:absolute;left:16px;bottom:16px;max-width:calc(100% - 32px);padding:12px 15px;border:1px solid #83ffe49c;border-radius:10px;background:#0e2931d9;color:#c4ffe8;font-size:12px;box-shadow:0 0 25px #29f8b955}
+.heist-mission strong{color:white}
+.heist-overlay{background:linear-gradient(120deg,#100f21da,#281634cf);z-index:2}
+.heist-overlay h2{max-width:460px;font-size:clamp(28px,4vw,48px);line-height:1.1}
+.heist-overlay button{font-size:15px;padding:16px 24px}
+.heist-side{display:grid;grid-template-rows:auto 1fr;gap:16px}
+.heist-side-card{border:1px solid #ffffff28;border-radius:18px;background:linear-gradient(150deg,#30243fdd,#18263bd9);padding:22px;box-shadow:inset 0 1px 0 #fff2}
+.heist-side-card h2{font-size:23px;line-height:1.1;margin:12px 0}
+.heist-side-card p,.heist-side-card small{font-size:12px;line-height:1.6;color:#c9bdd6}
+.heist-car-preview{height:96px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#ffffff0c;border:1px solid #ffffff1e;border-radius:12px;padding:20px}
+.heist-car-preview i{width:125px;height:39px;border-radius:45% 45% 14% 14%;transform:skew(-22deg);box-shadow:0 17px 0 #0b1428,0 22px 22px #0008}
+.heist-car-preview span{font-size:10px;letter-spacing:2px}
+.heist-colors{display:flex;gap:9px;margin-top:17px}
+.heist-colors button{width:29px;height:29px;border-radius:50%;border:2px solid #ffffff55;transition:transform .2s}
+.heist-colors button[aria-pressed=true]{outline:2px solid #fff;outline-offset:2px;transform:scale(1.08)}
+.heist-colors button:disabled{opacity:.55}
+.heist-board-title{display:flex;align-items:center;gap:10px;color:#9df7dd}
+.heist-board-title h2{color:white;font-size:19px}
+.heist-board ol{list-style:none;margin:15px 0;padding:0;display:grid;gap:7px}
+.heist-board li{display:flex;justify-content:space-between;gap:7px;padding:9px 0;border-bottom:1px solid #ffffff22;font-size:12px}
+.heist-board li b{color:#e6a6d0}
+.heist-board li span{flex:1}
+.heist-board li strong{color:#9df7dd}
+.heist-board .heist-empty{color:#bdaec9}
+.heist-pro-link{display:block;margin-top:18px;padding:12px;background:#a1f5d9;color:#142b30;border-radius:9px;font-size:12px;font-weight:900;text-align:center}
+.heist-save{display:flex;gap:6px}
+.heist-save input{min-width:0;flex:1;background:#1b2136;border:1px solid #fff4;border-radius:8px;padding:9px;color:#fff}
+.heist-save button{background:#a1f5d9;color:#1b2634;border-radius:8px;padding:9px;font-weight:800;font-size:11px}
+.heist-controls{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:15px;color:#cfc0db;font-size:12px}
+.heist-controls button{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid #ffffff40;border-radius:8px;white-space:nowrap}
+.heist-touch{display:none}
+.heist-disclaimer{font-size:11px!important;color:#9d93b4!important;margin-top:27px}
+.heist-disclaimer a{color:#9df7dd;text-decoration:underline}
+.heist-credits{font-size:11px!important;color:#9d93b4!important;margin-top:5px}
+.heist-credits a{color:#9df7dd;text-decoration:underline}
+@media(max-width:900px){.heist-layout{grid-template-columns:1fr}.heist-stage{min-height:480px}.heist-side{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto}.heist-heading{align-items:start;flex-direction:column}.heist-edition{font-size:9px}}
+@media(max-width:650px){.heist-stage{min-height:440px}.heist-side{grid-template-columns:1fr}.heist-hud span{font-size:10px;padding:7px}.heist-touch{display:flex;flex-direction:column;align-items:center;gap:4px;margin:15px auto;touch-action:none}.heist-touch>div{display:flex;gap:4px}.heist-touch button{min-width:55px;height:48px;border-radius:8px;background:#4e3558;border:1px solid #ffb7d3a0;color:white;font-size:20px;touch-action:none}.heist-touch .heist-action{width:180px;font-size:12px;background:#9df7dd;color:#12242c;font-weight:900}.heist-heading h1{letter-spacing:-2px}}

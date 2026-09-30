@@ -18,7 +18,7 @@ export default function ProGate({ feature }: { feature: "workspace" | "arcade" |
     setLocale(language);
   }, []);
   const t=copy[locale];
-  return <main className="pro-gate"><Link href="/">← VI Companion</Link><div className="pro-gate-stage">
+  return <main className="pro-gate"><Link href="/">← GTA VI Companion</Link><div className="pro-gate-stage">
     <div className="pro-gate-preview" aria-hidden="true"><span>VI</span><div/><div/><div/></div>
     <div className="pro-gate-overlay"><LockKeyhole size={42}/><span>COMPANION PRO</span><h1>{t[feature]}</h1>
       <p>{t.message}</p><Link href="/pricing">{t.plans}<ArrowUpRight size={18}/></Link></div>

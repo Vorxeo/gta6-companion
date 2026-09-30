@@ -13,7 +13,7 @@ export default function BillingView({signedIn,active,status,currency,interval,en
   const [locale,setLocale]=useState<Locale>("en");
   useEffect(()=>{let language=browserLocale(navigator.language);try{const saved=localStorage.getItem("vi-language");if(isLocale(saved))language=saved;}catch{}setLocale(language);},[]);
   const t=copy[locale];
-  return <main className="billing-view"><Link href="/">← {t.back} · VI Companion</Link><h1>{t.title}</h1>
+  return <main className="billing-view"><Link href="/">← {t.back} · GTA VI Companion</Link><h1>{t.title}</h1>
     {error&&<p role="alert">{t.error}</p>}{canceled&&<p>{t.canceled}</p>}
     {!signedIn?<p><Link href="/sign-in?next=billing">{t.signIn} →</Link></p>:active?<>
       <p>Companion Pro · {currency} · {interval}</p><p>{t.active}: {end?new Intl.DateTimeFormat(locale,{dateStyle:"long"}).format(new Date(end)):"—"}</p>

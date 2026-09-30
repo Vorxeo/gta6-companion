@@ -1,6 +1,6 @@
-# VI Companion / After Dark
+# GTA VI Companion
 
-An independent, multilingual GTA VI fan companion, built with Next.js 15, React 19, TypeScript and CSS 3D motion. The GitHub experience combines its scroll-controlled cinematic scene and personal planning tools with original After Dark-inspired radio, an arcade game, a field guide and a community evidence board.
+An independent, multilingual GTA VI fan companion, built with Next.js 15, React 19, TypeScript and CSS 3D motion. The GitHub experience combines its scroll-controlled cinematic scene and personal planning tools with official-news highlights, a community evidence board, an arcade game and a field guide.
 
 ## Run and validate
 
@@ -38,8 +38,8 @@ Personal tracker, planner, garage and arcade data live in browser storage namesp
 ## Experience
 
 - English, Spanish, Brazilian Portuguese and Dutch copy, remembered language selection, keyboard access and reduced-motion preference.
-- Colorful skyline, lighting presets, reactive 3D cards and tags, and a full-bleed scroll-scrubbed official trailer excerpt. There is no video player chrome. Sound is opt-in, tied to scrolling, and pauses when the scene is idle or offscreen.
-- Original Web Audio Coast Radio with two generated stations; switching between radio and scene sound prevents competing audio.
+- Colorful skyline, lighting presets, reactive 3D cards and tags, and a full-bleed scroll-scrubbed official trailer excerpt. There is no video player chrome. Sound is opt-in and uses the same native video track as the picture, so trailer voices remain synchronized. Mouse wheel deltas are capped while the scene is visible and video playback is limited to 0.8×.
+- Official-news highlights link to Rockstar sources; a music panel points to the announced album. No unconfirmed in-game radio stations or unlicensed tracks are presented.
 - Pro workspace: objectives, garage, planner, timer, search, filters, undo, export and validated restore.
 - Pro arcade: original 2D delivery game with keyboard/touch controls and a per-device best score.
 - Pro Creator Lab: an original, interactive crew-scenario simulator with route, pressure and team controls; its scores are fictional and a scenario can be saved on this device.
@@ -49,10 +49,10 @@ Personal tracker, planner, garage and arcade data live in browser storage namesp
 
 ## Media and independence
 
-The scene uses a 12-second excerpt (00:12–00:24) from [Rockstar Games' official GTA VI Trailer 2](https://www.rockstargames.com/VI/media/videos). The 1920×864 H.264 copy is optimized for bidirectional seeking, and the matching `.m4a` audio excerpt plays only after an explicit gesture. The poster is its first frame. Motion off uses the poster without fetching the video. Original footage belongs to Rockstar Games; this fan project is not affiliated with or endorsed by Rockstar Games.
+The scene uses a 12-second excerpt (00:12–00:24) from [Rockstar Games' official GTA VI Trailer 2](https://www.rockstargames.com/VI/media/videos). The 1920×864 H.264 copy is optimized for bidirectional seeking, and its original audio plays from the native video only after an explicit gesture. The poster is its first frame. Motion off uses the poster without fetching the video. Original footage belongs to Rockstar Games; this fan project is not affiliated with or endorsed by Rockstar Games.
 
 **Commercial launch review:** [Rockstar/Take-Two's published policy](https://support.rockstargames.com/articles/7bNaeoMFTV0iUDGhStTXvz/policy-on-posting-copyrighted-rockstar-games-material) describes use of their footage to promote a product or service as commercial and directs licensing requests to `copyright@take2games.com`. The existing trailer excerpt, audio and poster should be licensed or replaced with original assets before enabling paid subscriptions. This repository does not assert permission to use them commercially.
 
-The skyline is a CSS illustration. Card motion uses CSS perspective, not a WebGL engine. The arcade and synthesized radio are original companion experiences, not GTA VI gameplay or soundtrack.
+The skyline is a CSS illustration. Card motion uses CSS perspective, not a WebGL engine. The arcade is an original companion experience, not GTA VI gameplay.
 
 The proposed full 3D character-and-supercar game is specified in [docs/3d-game-brief.md](docs/3d-game-brief.md). It is a future production phase, not a current product feature.

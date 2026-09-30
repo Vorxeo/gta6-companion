@@ -6,5 +6,5 @@ const copy={en:{paid:"Payment confirmed. Your Pro access is ready.",processing:"
 export default function ReturnView({paid}:{paid:boolean}){
   const [locale,setLocale]=useState<Locale>("en");
   useEffect(()=>{let language=browserLocale(navigator.language);try{const saved=localStorage.getItem("vi-language");if(isLocale(saved))language=saved;}catch{}setLocale(language);},[]);
-  const t=copy[locale];return <main className="billing-view"><h1>VI Companion Pro</h1><p>{paid?t.paid:t.processing}</p><Link href="/billing">{t.billing} →</Link></main>;
+  const t=copy[locale];return <main className="billing-view"><h1>GTA VI Companion Pro</h1><p>{paid?t.paid:t.processing}</p><Link href="/billing">{t.billing} →</Link></main>;
 }

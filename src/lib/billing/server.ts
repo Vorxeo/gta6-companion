@@ -98,7 +98,7 @@ export async function syncPayment(paymentId: string) {
         method: "POST", idempotencyKey: `${checkout.id}:subscription`,
         body: { amount: { currency: plan.currency, value: plan.value }, interval: plan.mollieInterval,
           method: plan.method,
-          startDate: end.slice(0, 10), description: "VI Companion Pro", webhookUrl: webhookUrl(),
+          startDate: end.slice(0, 10), description: "GTA VI Companion Pro", webhookUrl: webhookUrl(),
           metadata: { checkout_id: checkout.id } },
       });
       if (!/^sub_[a-zA-Z0-9]+$/.test(created.id)) throw new Error("Invalid subscription response");

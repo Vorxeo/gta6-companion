@@ -1,7 +1,7 @@
 export const en = {
   language: "Language",
   skip: "Skip to content",
-  home: "VI Companion home",
+  home: "GTA VI Companion home",
   welcome: "WELCOME TO LEONIDA",
   nav: "Main navigation",
   discover: "Discover",
@@ -177,7 +177,7 @@ export type Locale = "en" | "es" | "pt-BR" | "nl";
 export const pt: Messages = {
   language: "Idioma",
   skip: "Pular para o conteúdo",
-  home: "VI Companion início",
+  home: "GTA VI Companion início",
   welcome: "BEM-VINDO A LEONIDA",
   nav: "Navegação principal",
   discover: "Descobrir",
@@ -351,7 +351,7 @@ export const pt: Messages = {
 export const es: Messages = {
   language: "Idioma",
   skip: "Saltar al contenido",
-  home: "VI Companion inicio",
+  home: "GTA VI Companion inicio",
   welcome: "BIENVENIDO A LEONIDA",
   nav: "Navegación principal",
   discover: "Descubrir",

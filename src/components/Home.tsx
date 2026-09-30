@@ -166,28 +166,31 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
   ];
   return (
     <div className={`app ${motion ? "motion-enabled" : "motion-off"}`}>
-      <title>{`VI Companion — ${t.hero2}`}</title>
+      <title>{`GTA VI Companion — ${t.hero2}`}</title>
       <div id="site-content">
         <a className="skip" href="#main">
           {t.skip}
         </a>
         <header className="header">
-          <a href="#" className="brand" aria-label={t.home}>
+          <a href="#" className="brand" aria-label="GTA VI Companion">
             <span className="brand-mark">
               VI<span>✦</span>
             </span>
             <span>
-              COMPANION<small>{t.welcome}</small>
+              <span className="brand-wordmark">GTA VI <b>COMPANION</b><small>{t.welcome}</small></span>
             </span>
           </a>
           <nav className={menu ? "nav nav-open" : "nav"} aria-label={t.nav}>
+            <Link href="/news" onClick={() => setMenu(false)}>{locale === "pt-BR" ? "Notícias" : locale === "es" ? "Noticias" : locale === "nl" ? "Nieuws" : "News"}</Link>
             <Link className="nav-community" href={`/community?lang=${locale}`} onClick={() => setMenu(false)}>{locale === "pt-BR" ? "Comunidade" : locale === "es" ? "Comunidad" : locale === "nl" ? "Gemeenschap" : "Community"}<span aria-hidden="true">✦</span></Link>
             <a href="#discover" onClick={() => setMenu(false)}>
               {t.discover}
             </a>
-            <button onClick={() => open("explore")}>{t.explore}</button>
-            <button onClick={() => open("tracker")}>{t.progress}</button>
             <Link href="/pricing">{pricingLabels[locale]}</Link>
+            <Link className="nav-buy" href="/buy" onClick={() => setMenu(false)}>{locale === "pt-BR" ? "Comprar GTA VI" : locale === "es" ? "Comprar GTA VI" : locale === "nl" ? "Koop GTA VI" : "Buy GTA VI"}<ArrowUpRight size={15}/></Link>
+            <div className="mobile-account-links">
+              {signedIn || userId ? <><Link href={userId ? "/billing" : "/pricing"}>Pro</Link><form action={signOut}><button type="submit">{authCopy[locale].signout}</button></form></> : <><Link href="/sign-in">{authCopy[locale].signin}</Link><Link href="/sign-up">{authCopy[locale].signup}</Link></>}
+            </div>
           </nav>
           <div className="header-actions">
             <label className="language-switch">
@@ -209,13 +212,6 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
               onClick={() => setMenu(!menu)}
             >
               {menu ? <X /> : <Menu />}
-            </button>
-            <button
-              className="profile"
-              onClick={() => open("tracker")}
-              aria-label={t.progress}
-            >
-              VC
             </button>
             <div className="account-links">
               {signedIn || userId ? (
@@ -414,7 +410,7 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
         </main>
         <footer>
           <a className="footer-logo" href="#">
-            VI <span>COMPANION</span>
+            GTA VI <span>COMPANION</span>
           </a>
           <p>
             {t.footer}

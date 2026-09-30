@@ -51,7 +51,7 @@ export default function Pricing({available,brlAvailable,terms,privacy,error,coun
   const icons = [Cloud, Route, Users];
   return (
     <div className={`pricing-page app ${motion ? "motion-enabled" : "motion-off"}`}>
-      <title>{`${t.nav} — VI Companion`}</title>
+      <title>{`${t.nav} — GTA VI Companion`}</title>
       <header className="pricing-header">
         <Link href="/" className="pricing-brand" aria-label={t.back}>VI <span>COMPANION</span><span className="pricing-brand-star">✦</span></Link>
         <div className="pricing-header-actions">

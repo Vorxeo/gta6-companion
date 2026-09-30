@@ -46,7 +46,7 @@ export async function startCheckout(form: FormData) {
     if (customerError) throw customerError;
     if (!customer) {
       const created = await mollie<MollieCustomer>("/customers", { method: "POST", idempotencyKey: user.id,
-        body: { name: user.email || "VI Companion member", email: user.email, metadata: { user_id: user.id } } });
+        body: { name: user.email || "GTA VI Companion member", email: user.email, metadata: { user_id: user.id } } });
       if (!/^cst_[a-zA-Z0-9]+$/.test(created.id)) throw new Error("Invalid customer response");
       const result = await admin.from("billing_customers").upsert({ user_id: user.id, mollie_customer_id: created.id }, { onConflict: "user_id" })
         .select("mollie_customer_id").single();
@@ -61,7 +61,7 @@ export async function startCheckout(form: FormData) {
     const payment = await mollie<MollieCheckout>("/payments", { method: "POST", idempotencyKey: `${checkoutId}:payment`,
       body: { amount: { currency: plan.currency, value: plan.value }, customerId: customer.mollie_customer_id,
         sequenceType: "first", method: plan.method, locale,
-        description: `VI Companion Pro — ${plan.interval}`,
+        description: `GTA VI Companion Pro — ${plan.interval}`,
         redirectUrl: `${siteOrigin()}/billing/return?checkout=${checkoutId}`,
         webhookUrl: webhookUrl(), metadata: { checkout_id: checkoutId } } });
     const checkoutUrl = mollieCheckoutUrl(payment._links?.checkout?.href);

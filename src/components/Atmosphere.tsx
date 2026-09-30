@@ -24,19 +24,29 @@ export function Tilt({
         const r = e.currentTarget.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width - 0.5,
           y = (e.clientY - r.top) / r.height - 0.5;
-        e.currentTarget.style.setProperty("--rx", `${-y * 9}deg`);
-        e.currentTarget.style.setProperty("--ry", `${x * 11}deg`);
+        e.currentTarget.style.setProperty("--art-x", `${x * 9}px`);
+        e.currentTarget.style.setProperty("--art-y", `${y * 7}px`);
         e.currentTarget.style.setProperty("--mx", `${(x + 0.5) * 100}%`);
         e.currentTarget.style.setProperty("--my", `${(y + 0.5) * 100}%`);
       }}
       onPointerLeave={() => {
-        ref.current?.style.setProperty("--rx", "0deg");
-        ref.current?.style.setProperty("--ry", "0deg");
+        ref.current?.style.setProperty("--art-x", "0px");
+        ref.current?.style.setProperty("--art-y", "0px");
       }}
     >
       {children}
     </div>
   );
+}
+export function AmbientCity() {
+  return <div className="ambient-city" aria-hidden="true">
+    <div className="ambient-city-glow" />
+    <div className="ambient-city-skyline" />
+    <div className="ambient-city-road"><div className="ambient-city-lanes" /></div>
+    <div className="ambient-city-sign"><span>VICE CITY</span><strong>VI</strong></div>
+    <div className="ambient-city-palm ambient-city-palm-left" />
+    <div className="ambient-city-palm ambient-city-palm-right" />
+  </div>;
 }
 export function Skyline() {
   return (

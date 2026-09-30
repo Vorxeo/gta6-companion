@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight, Check, Sparkles, Globe2, Cloud, Route, Users, Plus } from "lucide-react";
-import { Tilt } from "@/components/Atmosphere";
+import { Tilt, AmbientCity } from "@/components/Atmosphere";
 import { browserLocale, isLocale, type Locale } from "@/lib/i18n";
 import { prices, formatPrice, pricingCopy, type Currency } from "@/lib/pricing";
 import { suggestedCurrency } from "@/lib/currency-choice";
@@ -14,24 +14,27 @@ export default function Pricing({available,brlAvailable,terms,privacy,error,coun
   const [currency, setCurrency] = useState<Currency>("EUR");
   const [currencyPinned, setCurrencyPinned] = useState(false);
   const [annual, setAnnual] = useState(false);
-  const [motion, setMotion] = useState(false);
+  const [motion, setMotion] = useState(true);
   const [ready, setReady] = useState(false);
   useEffect(() => {
     let language = browserLocale(navigator.language);
-    let animate = !matchMedia("(prefers-reduced-motion: reduce)").matches;
     try {
       const saved = localStorage.getItem("vi-language");
       if (isLocale(saved)) language = saved;
-      const preference = localStorage.getItem("vi-motion");
-      if (preference === "true" || preference === "false") animate = preference === "true";
     } catch { /* Pricing remains usable without storage. */ }
     setLocale(language);
     let savedCurrency: Currency | null = null;
     try { const saved = localStorage.getItem("vi-currency"); if (saved === "EUR" || saved === "USD" || saved === "BRL") savedCurrency = saved; } catch {}
     setCurrencyPinned(!!savedCurrency);
     setCurrency(savedCurrency || suggestedCurrency(country, language));
-    setMotion(animate);
     setReady(true);
+  }, []);
+  useEffect(() => {
+    const media = matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotion = () => setMotion(!media.matches);
+    syncMotion();
+    media.addEventListener("change", syncMotion);
+    return () => media.removeEventListener("change", syncMotion);
   }, []);
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -52,6 +55,7 @@ export default function Pricing({available,brlAvailable,terms,privacy,error,coun
   return (
     <div className={`pricing-page app ${motion ? "motion-enabled" : "motion-off"}`}>
       <title>{`${t.nav} — GTA VI Companion`}</title>
+      <AmbientCity />
       <header className="pricing-header">
         <Link href="/" className="pricing-brand" aria-label={t.back}>VI <span>COMPANION</span><span className="pricing-brand-star">✦</span></Link>
         <div className="pricing-header-actions">

@@ -24,7 +24,7 @@ import {
 import { ScrollCinema } from "@/components/ScrollCinema";
 import MergedHub from "@/components/MergedHub";
 import { mergeCopy } from "@/lib/merge-copy";
-import { Tilt, Skyline } from "@/components/Atmosphere";
+import { Tilt, Skyline, AmbientCity } from "@/components/Atmosphere";
 import { Workspace, type Panel, type Timer } from "@/components/Workspace";
 import { messages, browserLocale, isLocale, type Locale } from "@/lib/i18n";
 import { initialData, readData, type Data } from "@/lib/model";
@@ -38,7 +38,7 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
     [data, setData] = useState<Data>(initialData),
     [panel, setPanel] = useState<Panel | null>(initialPanel),
     [menu, setMenu] = useState(false),
-    [motion, setMotion] = useState(false),
+    [motion, setMotion] = useState(true),
     [lighting, setLighting] = useState<"dawn"|"sunset"|"night">("sunset"),
     [toast, setToast] = useState("");
   const [timer, setTimer] = useState<Timer>({
@@ -50,21 +50,23 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
   const t = messages[locale];
   useEffect(() => {
     let preferred = browserLocale(navigator.language);
-    let motionPreference = !matchMedia("(prefers-reduced-motion: reduce)")
-      .matches;
     try {
       const stored = userId ? localStorage.getItem(`vi-companion:${userId}`) : null;
       if (stored) setData(readData(JSON.parse(stored)));
       const language = localStorage.getItem("vi-language");
       if (isLocale(language)) preferred = language;
-      const m = localStorage.getItem("vi-motion");
-      if (m === "true" || m === "false") motionPreference = m === "true";
     } catch {
       setStorageOk(false);
     }
     setLocale(preferred);
-    setMotion(motionPreference);
     setReady(true);
+  }, []);
+  useEffect(() => {
+    const media = matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotion = () => setMotion(!media.matches);
+    syncMotion();
+    media.addEventListener("change", syncMotion);
+    return () => media.removeEventListener("change", syncMotion);
   }, []);
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -79,12 +81,11 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
     if (ready)
       try {
         if (userId) localStorage.setItem(`vi-companion:${userId}`, JSON.stringify(data));
-        localStorage.setItem("vi-motion", String(motion));
         setStorageOk(true);
       } catch {
         setStorageOk(false);
       }
-  }, [data, motion, ready, userId]);
+  }, [data, ready, userId]);
   useEffect(() => {
     if (!timer.started)
       setTimer((s) => ({ ...s, remaining: data.minutes * 60 }));
@@ -167,6 +168,7 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
   return (
     <div className={`app ${motion ? "motion-enabled" : "motion-off"}`}>
       <title>{`GTA VI Companion — ${t.hero2}`}</title>
+      <AmbientCity />
       <div id="site-content">
         <a className="skip" href="#main">
           {t.skip}
@@ -277,10 +279,7 @@ export default function Home({ userId = null, signedIn = false, initialPanel = n
                 <i /> VICE CITY, LEONIDA
               </span>
               <span>{t.concept}</span>
-              <button onClick={() => setMotion(!motion)} aria-pressed={motion}>
-                {motion ? <Sparkles size={14} /> : <Layers3 size={14} />}{" "}
-                {t.motion}: {motion ? t.on : t.off}
-              </button>
+              <span className="hero-bottom-signal"><Sparkles size={14} />{t.cinemaLabel}</span>
             </div>
           </section>
           <section

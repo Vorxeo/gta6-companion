@@ -5,5 +5,7 @@ node_modules/
 .tooling/
 game/godot/.godot/
 game/godot/export/
+# Animation-bearing source is fetched locally; publish only the compiled game.
+game/godot/assets/vitruvian_body.glb
 .env*
 !.env.example

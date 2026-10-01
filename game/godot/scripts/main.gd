@@ -73,6 +73,7 @@ func _ready() -> void:
 	var human: PackedScene = load("res://assets/mannequiny.glb")
 	var model := human.instantiate()
 	avatar.add_child(model)
+	model.rotation.y = PI
 	animation = model.get_node("AnimationPlayer")
 	animation.play("idle")
 	for i in 3:
@@ -136,6 +137,7 @@ func _car_model(root: Node3D, model_name: String) -> void:
 	var model := packed.instantiate()
 	root.add_child(model)
 	model.scale = Vector3.ONE * 1.65
+	model.rotation.y = PI
 
 func _box(parent: Node3D, size: Vector3, at: Vector3, tint: Color) -> void:
 	var mesh := BoxMesh.new()
@@ -227,7 +229,7 @@ func _process(delta: float) -> void:
 			if not _blocked(next_step, .5):
 				avatar.position = next_step
 			if direction.length() > .1:
-				avatar.rotation.y = atan2(direction.x, -direction.y)
+				avatar.rotation.y = atan2(-direction.x, -direction.y)
 		var target_animation := "idle" if driving or direction.length() < .1 else "run"
 		if animation.current_animation != target_animation:
 			animation.play(target_animation, .15)

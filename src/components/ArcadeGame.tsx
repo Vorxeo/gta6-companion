@@ -38,7 +38,7 @@ export default function ArcadeGame({userId,demo=false}:{userId:string;demo?:bool
   const t=arcadeCopy[locale];
   const credits:Record<Locale,{character:string;cars:string}>={en:{character:"Character",cars:"Cars"},es:{character:"Personaje",cars:"Coches"},"pt-BR":{character:"Personagem",cars:"Carros"},nl:{character:"Personage",cars:"Auto's"}};
   const save=()=>{
-    if(score===null||demo)return;
+    if(score===null)return;
     const name=alias.trim().replace(/[^\p{L}\p{N} _-]/gu,"").slice(0,16);
     if(!name)return;
     const next=[...board,{name,score,date:new Date().toISOString().slice(0,10)}].sort((a,b)=>b.score-a.score).slice(0,10);
@@ -49,8 +49,8 @@ export default function ArcadeGame({userId,demo=false}:{userId:string;demo?:bool
     <div className="heist-layout"><section className="heist-stage godot-stage" aria-label={t.title}>
       <iframe ref={frame} title="Neon Getaway Godot 3D" src={`${demo?"/arcade-godot":"/arcade/build"}/index.html?lang=${encodeURIComponent(locale)}`} allow="autoplay; fullscreen" loading="eager"/>
     </section><aside className="heist-side"><div className="heist-side-card"><span className="merged-kicker">{t.contract}</span><h2>{demo?t.demoGoal:t.goal}</h2><p>{t.contractText}</p><p>{t.move}</p><p>{demo?t.demoBoard:t.localBoard}</p>{demo&&<Link className="heist-pro-link" href="/pricing">{t.unlockPro} <ArrowUpRight size={14}/></Link>}</div>
-    <div className="heist-side-card heist-board"><div className="heist-board-title"><Trophy size={20}/><h2>{t.leaderboard}</h2></div><small>{t.localBoard}</small>{demo?<Link className="heist-pro-link" href="/pricing">{t.unlockPro} ↗</Link>:<><ol>{board.length?board.map((entry,i)=><li key={`${entry.date}-${i}`}><b>{String(i+1).padStart(2,"0")}</b><span>{entry.name}</span><strong>{entry.score}</strong></li>):<li className="heist-empty">{t.noScores}</li>}</ol>{score!==null&&<div className="heist-save"><input aria-label={t.alias} maxLength={16} placeholder={t.alias} value={alias} onChange={event=>setAlias(event.target.value)}/><button onClick={save}>{t.save} {score}</button></div>}</>}</div></aside></div>
+    <div className="heist-side-card heist-board"><div className="heist-board-title"><Trophy size={20}/><h2>{t.leaderboard}</h2></div><small>{t.localBoard}</small><ol>{board.length?board.map((entry,i)=><li key={`${entry.date}-${i}`}><b>{String(i+1).padStart(2,"0")}</b><span>{entry.name}</span><strong>{entry.score}</strong></li>):<li className="heist-empty">{t.noScores}</li>}</ol>{score!==null&&<div className="heist-save"><input aria-label={t.alias} maxLength={16} placeholder={t.alias} value={alias} onChange={event=>setAlias(event.target.value)}/><button onClick={save}>{t.save} {score}</button></div>}</div></aside></div>
     <p className="heist-disclaimer">{demo?t.demoNote:t.fanNote} <Link href="/community">{t.community} ↗</Link></p>
-    <p className="heist-credits">{credits[locale].character}: <a href="https://github.com/gdquest-demos/godot-3d-mannequin" target="_blank" rel="noopener noreferrer">GDQuest, Luciano Muñoz &amp; contributors (CC BY 4.0)</a> · {credits[locale].cars}: <a href="https://kenney.nl/assets/car-kit" target="_blank" rel="noopener noreferrer">Kenney (CC0)</a></p>
+    <p className="heist-credits">{credits[locale].character}: <a href="https://github.com/ibrews/VitruvianGodot" target="_blank" rel="noopener noreferrer">VitruvianGodot (CC0) / Mixamo</a>, <a href="https://github.com/gdquest-demos/godot-3d-mannequin" target="_blank" rel="noopener noreferrer">GDQuest (CC BY 4.0)</a> · {credits[locale].cars}: <a href="https://kenney.nl/assets/car-kit" target="_blank" rel="noopener noreferrer">Kenney (CC0)</a></p>
   </main></div>;
 }

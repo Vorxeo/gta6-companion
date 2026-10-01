@@ -4,7 +4,13 @@
 
 ## Experiência
 
-Um jogo autoral em terceira pessoa, integrado como recurso Pro. O jogador personaliza um personagem, explora um bairro costeiro fictício à noite, identifica carros raros, planeja a aproximação, entra no veículo e chega a um ponto de extração. O objetivo é simples; o interesse vem da movimentação, da direção, do comportamento da segurança, dos caminhos alternativos e das consequências de cada escolha.
+Um jogo autoral em terceira pessoa, integrado como recurso Pro. O jogador personaliza um personagem, explora uma cidade costeira fictícia ao longo do dia e da noite, identifica carros raros, planeja a aproximação, entra no veículo e chega a um ponto de extração. O objetivo é simples; o interesse vem da movimentação, da direção, do comportamento da segurança, dos caminhos alternativos e das consequências de cada escolha.
+
+## Direção do mundo
+
+**Vice City é a referência ficcional; Miami, no sul da Flórida, é a referência real.** A [Rockstar situa Vice City em Leonida](https://www.rockstargames.com/VI/only-in-leonida/vice-city) e [descreveu Vice City como uma releitura de Miami](https://www.rockstargames.com/it/newswire/article/ak14o88385o5k3/vice-city-disponibile-su-playstationnetwork.html). Nosso mapa deve ter identidade própria, mas transmitir o contraste de uma cidade costeira ensolarada: marina, comércio, bairros residenciais e de risco, autoestrada, áreas úmidas e floresta, com transições que façam sentido ao percorrer a missão. Arquitetura, sinalização, objetos de rua, jardins e rotina dos NPCs devem variar conforme o bairro e a hora.
+
+A meta visual é um mundo bonito, com escala plausível, materiais convincentes e luz natural de dia; pôr do sol e noite exigem fontes de iluminação explicáveis na cena. O trecho jogável deve ser revisado a pé e ao volante em diferentes horários e em dispositivos Web reais. O cenário atual é um protótipo estilizado; ainda faltam qualidade de personagens, fachadas, vegetação, água e iluminação para atingir essa direção. Não copiar o mapa, a arte ou os personagens da Rockstar.
 
 O primeiro recorte jogável deve ter um bairro pequeno e detalhado, com ruas, garagem, estacionamento de luxo, pedestres, tráfego e interiores pontuais. Nada de mapa enorme vazio. Cada contrato combina localização do carro, rota de fuga, nível de vigilância, horário e clima. O carro adquirido vai para uma garagem do jogador, com histórico e personalização visual. Uma tentativa fracassada muda a patrulha e a posição dos carros na próxima rodada.
 
@@ -21,7 +27,7 @@ O primeiro recorte jogável deve ter um bairro pequeno e detalhado, com ruas, ga
 
 ## Motor e integração
 
-O protótipo usa **Godot 4.5.2 com exportação Web** incorporada no Next.js. O add-on Godot AI do arquivo fornecido pelo proprietário foi instalado no projeto e o MCP foi registrado e testado com o editor ativo. O ambiente local usa Godot e uvx portáteis em `.tooling/`. O humano animado vem do repositório público GDQuest Open 3D Mannequin (CC BY 4.0); os carros usam malhas CC0 do Kenney Car Kit. Há créditos em `game/godot/assets/ATTRIBUTION.md`. O mundo tem trânsito móvel e jardins, mas ainda precisa de produção visual, direção, áudio, controles móveis e otimização.
+O protótipo usa **Godot 4.5.2 com exportação Web** incorporada no Next.js. O add-on Godot AI do arquivo fornecido pelo proprietário foi instalado no projeto e o MCP foi registrado e testado com o editor ativo. O ambiente local usa Godot e uvx portáteis em `.tooling/`. O humano atual usa malhas e texturas CC0 do VitruvianGodot, com animações Mixamo de licença distinta; o primeiro protótipo usava o GDQuest Open 3D Mannequin (CC BY 4.0). Os carros usam malhas CC0 do Kenney Car Kit. Há créditos em `game/godot/assets/ATTRIBUTION.md`. O mundo tem trânsito móvel e jardins, mas ainda precisa de produção visual, direção, áudio, controles móveis e otimização.
 
 O ranking atual é **local ao navegador** e explicitamente não verificado. Não usar as pontuações para prémios, recompensas ou reputação pública. Um ranking global exigirá simulação ou telemetria validada no servidor e proteção contra abuso, além de infraestrutura Supabase configurada.
 

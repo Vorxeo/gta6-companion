@@ -49,10 +49,7 @@ func _draw() -> void:
 	for person in world.crowd:
 		var p := map_point(person.actor.position, origin)
 		if p.distance_to(CENTER) < RADIUS - 4: draw_circle(p, 1.4, Color("#c6cacf"))
-	var target: Vector3 = world.milo.position
-	if world.phase == "car": target = world.car.position
-	elif world.phase == "race" and world.gate_index < world.GATES.size():
-		target = Vector3(0, 0, world.GATES[world.gate_index])
+	var target: Vector3 = world.minimap_objective()
 	var marker := map_point(target, origin) - CENTER
 	marker = marker.limit_length(RADIUS - 8)
 	draw_circle(CENTER + marker, 4.5, Color("#ffd58a"))

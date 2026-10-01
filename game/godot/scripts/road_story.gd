@@ -2,6 +2,7 @@ extends Node3D
 
 # Original, browser-sized coastal district. Assets and licenses: assets/ATTRIBUTION.md.
 const GATES := [-240.0, -550.0, -850.0, -1160.0, -1480.0, -1780.0, -2080.0]
+const CROSSINGS := [-65.0, -190.0, -315.0, -440.0]
 const LINES := {
 	"en": ["MILO: I found a beautiful car by the marina.", "YOU: Another heist?", "MILO: One clean getaway. Then race me through the city and coast highway to the forest lookout. Three minutes, give or take.", "YOU: Let's go. Show me the car."],
 	"pt-BR": ["MILO: Encontrei um carro incrível na marina.", "VOCÊ: Outro roubo?", "MILO: Uma fuga limpa. Depois corremos pela cidade e autoestrada costeira até o mirante na floresta. Uns três minutos.", "VOCÊ: Vamos. Mostra o carro."],
@@ -46,10 +47,15 @@ var environment: Environment
 var day_hour := 9.5
 var map_features: Array[Dictionary] = []
 var mesh_cache: Dictionary = {}
+var material_cache: Dictionary = {}
 var blood_marks: Array[Node3D] = []
 var static_meshes: Array[MeshInstance3D] = []
 var street_lamps: Array[MeshInstance3D] = []
 var camera_yaw := 0.0
+var camera_orbit_hold := 0.0
+var sky_refresh := 0.0
+var handling = preload("res://scripts/vehicle_handling.gd").new()
+var render_budget: Node
 
 func _ready() -> void:
 	if OS.has_feature("web"):
@@ -73,19 +79,28 @@ func _ready() -> void:
 	camera.far = 520
 	add_child(camera)
 	camera.position = avatar.position + Vector3(0, 3.3, 5.5)
+	render_budget = preload("res://scripts/render_budget.gd").new()
+	add_child(render_budget)
+	render_budget.configure(get_viewport(), camera, sun)
+	render_budget.register_actor(avatar)
+	render_budget.register_actor(milo)
+	for person in crowd: render_budget.register_actor(person.actor)
 	_ui()
 	_update_ui()
 
 func _mat(color: Color, rough: float = .82, metal: float = 0.0) -> StandardMaterial3D:
+	var key := "%s:%s:%s" % [color, rough, metal]
+	if material_cache.has(key): return material_cache[key]
 	var m := StandardMaterial3D.new()
 	m.albedo_color = Color(color.r * .65, color.g * .65, color.b * .65, color.a)
 	m.roughness = rough
 	m.metallic = metal
 	m.metallic_specular = .15
+	material_cache[key] = m
 	return m
 
 func _terrain_mat(path: String, tiles_x: float, tiles_z: float) -> StandardMaterial3D:
-	var m := _mat(Color.WHITE)
+	var m := _mat(Color.WHITE).duplicate() as StandardMaterial3D
 	m.albedo_color = Color(.55, .55, .55) if path.contains("asphalt") else Color(.62, .72, .62)
 	m.albedo_texture = load(path)
 	m.uv1_scale = Vector3(tiles_x, tiles_z, 1)
@@ -135,6 +150,8 @@ func _lighting() -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_SKY
 	var sky := Sky.new()
+	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
+	sky.radiance_size = Sky.RADIANCE_SIZE_128
 	var atmosphere := ProceduralSkyMaterial.new()
 	sky_material = atmosphere
 	atmosphere.sky_top_color = Color("#5185a7")
@@ -165,9 +182,11 @@ func _world() -> void:
 		_box(self, Vector3(.33, .1, 940), Vector3(side * 12.3, .08, -1030), Color("#f4ead4"))
 		for z in range(-570, -1470, -27):
 			_box(self, Vector3(.13, .06, 9), Vector3(side * 6.3, .065, z), Color("#eee0bb"))
-	for z in [-65.0, -190.0, -315.0, -440.0]:
+	for z in CROSSINGS:
 		_box(self, Vector3(310, .06, 16), Vector3(0, .045, z), Color("#464b4d"))
 		_map_rect(Vector3(0, 0, z), Vector3(310, 0, 16), Color("#40494d"))
+		for stripe_x in range(-12, 13, 3):
+			_box(self, Vector3(1.6, .025, 3), Vector3(stripe_x, .09, z), Color("#d8d3bb"))
 	for x in [-125.0, -65.0, 65.0, 125.0]:
 		_box(self, Vector3(13, .06, 535), Vector3(x, .045, -215), Color("#464b4d"))
 		_map_rect(Vector3(x, 0, -215), Vector3(13, 0, 535), Color("#40494d"))
@@ -442,6 +461,7 @@ func _ui() -> void:
 	layer.add_child(minimap)
 
 func _input(event: InputEvent) -> void:
+	if _camera_input(event): return
 	if not event is InputEventKey or not event.pressed or event.echo: return
 	if event.keycode == KEY_R:
 		get_tree().reload_current_scene()
@@ -467,20 +487,55 @@ func _input(event: InputEvent) -> void:
 		milo.visible = false
 		(avatar as CharacterBody3D).collision_layer = 0
 		(milo as CharacterBody3D).collision_layer = 0
+		handling.reset((car as CharacterBody3D).velocity, car.rotation.y)
 		_show_gates()
-	elif phase == "race" and absf(velocity) < 1.5:
+	elif phase == "race" and _car_speed() < 1.5:
 		if not driving and avatar.position.distance_to(car.position) >= 4.5: return
+		var exit_at := _safe_exit_position() if driving else Vector3.ZERO
+		if driving and not exit_at.is_finite(): return
 		driving = not driving
 		avatar.visible = not driving
 		(avatar as CharacterBody3D).collision_layer = 0 if driving else 2
-		if not driving: avatar.position = car.position + Vector3(3, 0, 0)
+		if driving: handling.reset((car as CharacterBody3D).velocity, car.rotation.y)
+		else: avatar.position = exit_at
 	_update_ui()
+
+func _safe_exit_position() -> Vector3:
+	var capsule := CapsuleShape3D.new()
+	capsule.radius = .35
+	capsule.height = 1.8
+	var query := PhysicsShapeQueryParameters3D.new()
+	query.shape = capsule
+	query.collision_mask = 7
+	query.exclude = [(avatar as CharacterBody3D).get_rid(), (car as CharacterBody3D).get_rid()]
+	for offset in [car.global_basis.x * 3, -car.global_basis.x * 3, car.global_basis.z * 3.5, -car.global_basis.z * 3.5]:
+		var at: Vector3 = car.position + offset + Vector3.UP * .2
+		query.transform = Transform3D(Basis.IDENTITY, at + Vector3.UP * .9)
+		if not get_world_3d().direct_space_state.intersect_shape(query, 1).is_empty(): continue
+		var ground := PhysicsRayQueryParameters3D.create(at + Vector3.UP, at - Vector3.UP * 3, 1)
+		if get_world_3d().direct_space_state.intersect_ray(ground).is_empty(): continue
+		return at
+	return Vector3.INF
+
+func _car_speed() -> float:
+	var motion := (car as CharacterBody3D).velocity
+	return Vector2(motion.x, motion.z).length()
+
+func _camera_input(event: InputEvent) -> bool:
+	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+		camera_yaw -= event.relative.x * .004
+		camera_orbit_hold = 3.0
+		return true
+	return false
 
 func _process(delta: float) -> void:
 	if camera == null: return
-	_day_cycle()
+	_day_cycle(delta)
 	var focus := car if driving else avatar
-	camera_yaw = lerp_angle(camera_yaw, focus.rotation.y, minf(1, delta * 3.5))
+	camera.fov = lerpf(camera.fov, 60 + minf(8, absf(velocity) * .62) if driving else 60, minf(1, delta * 2))
+	camera_orbit_hold = maxf(0, camera_orbit_hold - delta)
+	if driving and camera_orbit_hold <= 0:
+		camera_yaw = lerp_angle(camera_yaw, focus.rotation.y, minf(1, delta * 3.5))
 	var behind := Vector3(sin(camera_yaw), 0, cos(camera_yaw))
 	var desired: Vector3 = focus.position + behind * (10.0 if driving else 5.5) + Vector3(0, 5.0 if driving else 3.0, 0)
 	# Keep the follow camera outside solid scenery.
@@ -499,8 +554,11 @@ func _physics_process(delta: float) -> void:
 			body.position = Vector3(-8, .3, clampf(body.position.z, -2090, 40))
 			(body as CharacterBody3D).velocity = Vector3.ZERO
 			velocity = 0
+			if body == car: handling.reset()
 	_walkers(delta)
 	_cars(delta)
+	if not driving: _drive_body(car as CharacterBody3D, Vector3.ZERO, delta)
+	if phase != "race": _drive_body(milo_car as CharacterBody3D, Vector3.ZERO, delta)
 	if milo.visible and not _knocked(milo as CharacterBody3D, delta):
 		_person_motion(milo as CharacterBody3D, Vector3.ZERO, delta)
 	var knocked := false
@@ -528,14 +586,14 @@ func _move(delta: float) -> void:
 	var steer := float(Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT)) - float(Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT))
 	var gas := float(Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)) - float(Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN))
 	if driving:
-		velocity = move_toward(velocity, gas * (13.0 if gas >= 0 else 6.0), (10 if gas != 0 else 3) * delta)
-		if Input.is_key_pressed(KEY_SPACE): velocity = move_toward(velocity, 0, 25 * delta)
-		car.rotation.y -= steer * velocity * .035 * delta
-		_drive_body(car as CharacterBody3D, -car.global_basis.z * velocity, delta)
+		var state: Dictionary = handling.step(delta, car.rotation.y, gas, steer, Input.is_key_pressed(KEY_SPACE), Input.is_key_pressed(KEY_SHIFT), (car as CharacterBody3D).is_on_floor())
+		car.rotation.y = state.yaw
+		_drive_body(car as CharacterBody3D, state.velocity, delta)
+		handling.feedback((car as CharacterBody3D).velocity)
 		velocity = (car as CharacterBody3D).velocity.dot(-car.global_basis.z)
 		avatar.position = car.position
 	else:
-		var direction := Vector3(steer, 0, -gas).normalized()
+		var direction := Vector3(steer, 0, -gas).normalized().rotated(Vector3.UP, camera_yaw)
 		var speed := 4.3 if Input.is_key_pressed(KEY_SHIFT) else 2.3
 		_person_motion(avatar as CharacterBody3D, direction * speed, delta)
 
@@ -554,7 +612,9 @@ func _person_motion(actor: CharacterBody3D, motion: Vector3, delta: float) -> vo
 func _drive_body(body: CharacterBody3D, motion: Vector3, delta: float) -> void:
 	var before := body.position
 	var push: Vector3 = body.get_meta("push", Vector3.ZERO)
-	body.set_meta("push", push.move_toward(Vector3.ZERO, 8 * delta))
+	# The player controller already retains momentum through feedback. Apply its
+	# impulse once; AI bodies overwrite cruise velocity, so their impulse decays.
+	body.set_meta("push", Vector3.ZERO if body == car and driving else push.move_toward(Vector3.ZERO, 8 * delta))
 	body.velocity = Vector3(motion.x + push.x, body.velocity.y - 23 * delta, motion.z + push.z)
 	body.move_and_slide()
 	for i in body.get_slide_collision_count():
@@ -565,8 +625,12 @@ func _drive_body(body: CharacterBody3D, motion: Vector3, delta: float) -> void:
 			direction.y = 0
 			other.set_meta("push", direction * minf(5, motion.length() * .35))
 			body.set_meta("push", -direction * minf(2, motion.length() * .15))
-	if motion.length() > 3:
-		_vehicle_impacts(before, body.position, motion)
+	# Use actual travel so external impulses count, while a blocked car cannot
+	# launch pedestrians based on a speed it never reached.
+	var travel := (body.position - before) / maxf(delta, .0001)
+	travel.y = 0
+	if travel.length() > 3:
+		_vehicle_impacts(before, body.position, travel)
 
 func _vehicle_impacts(before: Vector3, after: Vector3, motion: Vector3) -> void:
 	var actors: Array[Node3D] = [avatar, milo]
@@ -574,7 +638,7 @@ func _vehicle_impacts(before: Vector3, after: Vector3, motion: Vector3) -> void:
 	var a := Vector2(before.x, before.z)
 	var b := Vector2(after.x, after.z)
 	for node in actors:
-		if not node.visible or float(node.get_meta("immune_until", 0.0)) > elapsed: continue
+		if ((node as CharacterBody3D).collision_layer & 2) == 0 or float(node.get_meta("immune_until", 0.0)) > elapsed: continue
 		var point := Vector2(node.position.x, node.position.z)
 		var closest := Geometry2D.get_closest_point_to_segment(point, a, b)
 		if point.distance_to(closest) > 1.6 or absf(node.position.y - after.y) > 2: continue
@@ -622,41 +686,105 @@ func _blood(at: Vector3) -> void:
 	blood_marks.append(stain)
 	if blood_marks.size() > 20: blood_marks.pop_front().queue_free()
 
+func _pedestrian_route(home: Vector3, role: int) -> Array[Vector3]:
+	if home.z < -1000:
+		return [home + Vector3(0, 0, -16), home + Vector3(0, 0, 16), home]
+	var side := -1.0 if home.x < 0 else 1.0
+	var crossing: float = CROSSINGS[0]
+	for candidate in CROSSINGS:
+		if absf(home.z - candidate) < absf(home.z - crossing): crossing = candidate
+	var curb := Vector3(side * 17.4, 0, crossing)
+	var shop_z := crossing - 37 if crossing > -400 else crossing + 38
+	if role % 2 == 0:
+		# Visit a shop across the marked crossing, then return by the same safe route.
+		return [curb, Vector3(-side * 17.4, 0, crossing), Vector3(-side * 17.4, 0, shop_z), Vector3(-side * 17.4, 0, crossing), curb, home]
+	return [Vector3(side * 17.4, 0, shop_z), Vector3(side * 17.4, 0, crossing + 16), home]
+
+func _crossing_clear(z: float) -> bool:
+	var vehicles: Array[Node3D] = [car, milo_car]
+	for item in traffic: vehicles.append(item.car)
+	for node in vehicles:
+		var body := node as CharacterBody3D
+		if (body.collision_layer & 4) == 0: continue
+		if absf(body.position.x) > 12.5: continue
+		var gap := z - body.position.z
+		if absf(gap) < 3.8: return false
+		# Wait for approaching cars; a stopped car behind the stop line is safe.
+		if absf(body.velocity.z) > .6 and gap * body.velocity.z > 0:
+			if absf(gap / body.velocity.z) < 4.5: return false
+	return true
+
+func _routine_open(role: int) -> bool:
+	if role == 3: return day_hour >= 18 or day_hour < 2
+	return day_hour >= 7 and day_hour < 21
+
 func _walkers(delta: float) -> void:
 	for person in crowd:
 		var actor := person.actor as CharacterBody3D
-		var near := actor.position.distance_squared_to(avatar.position) < 150 * 150
-		actor.visible = near
-		var anim := actor.get_meta("animation", null) as AnimationPlayer
-		if anim: anim.active = near
 		if _knocked(actor, delta): continue
-		if not person.has("destination"):
-			person.destination = person.home + Vector3(0, 0, -14)
-			person.wait = 0.0
+		if not person.has("route"):
+			person.route = _pedestrian_route(person.home, person.role)
 			person.leg = 0
-			person.walk_time = 0.0
+			person.wait = 0.0
+			person.crossing = false
 		if person.wait > 0:
 			person.wait -= delta
 			_person_motion(actor, Vector3.ZERO, delta)
 			continue
-		var destination: Vector3 = person.destination
+		if person.leg == 0 and actor.position.distance_to(person.home) < 1 and not _routine_open(person.role):
+			_person_motion(actor, Vector3.ZERO, delta)
+			continue
+		var destination: Vector3 = person.route[person.leg]
 		var gap := destination - actor.position
 		gap.y = 0
-		person.walk_time += delta
-		if gap.length() < .8 or person.walk_time > 28:
-			person.leg += 1
-			person.walk_time = 0.0
-			person.wait = 1.5 + person.role * 1.1
-			person.destination = person.home + Vector3(0, 0, 14 if person.leg % 2 else -14)
+		person.crossing = absf(gap.x) > 1.2 and absf(destination.x) > 12 and absf(destination.z - actor.position.z) < 1.2
+		if person.crossing and absf(actor.position.x) >= 12.7 and not _crossing_clear(destination.z):
+			_person_motion(actor, Vector3.ZERO, delta)
+			continue
+		if gap.length() < .6:
+			person.crossing = false
+			person.leg = (person.leg + 1) % person.route.size()
+			# Longer pauses at the shop and at home; no teleporting between routine stops.
+			person.wait = (7.0 + person.role * 2) if person.leg in [0, 3] else .35
 			_person_motion(actor, Vector3.ZERO, delta)
 		else:
-			_person_motion(actor, gap.normalized() * person.speed, delta)
+			var motion: Vector3 = gap.normalized() * person.speed
+			for other in crowd:
+				if other.actor == actor: continue
+				var away: Vector3 = actor.position - other.actor.position
+				away.y = 0
+				if away.length_squared() > .01 and away.length_squared() < 1.1:
+					motion += away.normalized() * .35
+			_person_motion(actor, motion.limit_length(person.speed), delta)
+
+func _traffic_speed(body: CharacterBody3D, heading: Vector3, cruise: float) -> float:
+	var allowed := cruise
+	var vehicles: Array[Node3D] = [car, milo_car]
+	for item in traffic: vehicles.append(item.car)
+	for node in vehicles:
+		if node == body or not node.visible: continue
+		var gap := node.position - body.position
+		gap.y = 0
+		var ahead := gap.dot(heading)
+		var stopping_distance := 7 + cruise * cruise / 16.0
+		if absf(gap.cross(heading).y) < 2.4 and ahead > 0 and ahead < stopping_distance:
+			var other_speed := maxf(0, (node as CharacterBody3D).velocity.dot(heading))
+			allowed = minf(allowed, maxf(0, other_speed + (ahead - 5) * 1.3))
+	if absf(body.position.x) < 12.5 and absf(heading.z) > .7:
+		for person in crowd:
+			if not person.get("crossing", false): continue
+			var point: Vector3 = person.actor.position
+			if absf(point.x) > 18.5: continue
+			var ahead := (point.z - body.position.z) * heading.z
+			if ahead > 0 and ahead < 10 + cruise * cruise / 16.0:
+				allowed = minf(allowed, maxf(0, (ahead - 7.5) * 1.2))
+	return allowed
 
 func _cars(delta: float) -> void:
 	for item in traffic:
 		var moving := item.car as CharacterBody3D
 		var direction: float = item.get("direction", -1.0 if item.lane < 0 else 1.0)
-		var motion := Vector3((float(item.lane) - moving.position.x) * 1.4, 0, item.speed * direction)
+		var heading := Vector3(0, 0, direction)
 		if item.has("route"):
 			var target: Vector3 = item.route[item.route_index]
 			var gap := target - moving.position
@@ -665,17 +793,18 @@ func _cars(delta: float) -> void:
 				item.route_index = (item.route_index + 1) % item.route.size()
 				gap = item.route[item.route_index] - moving.position
 				gap.y = 0
-			var heading := atan2(-gap.x, -gap.z)
-			moving.rotation.y = lerp_angle(moving.rotation.y, heading, minf(1, delta * 2.5))
-			var alignment := maxf(.3, (-moving.global_basis.z).dot(gap.normalized()))
-			motion = -moving.global_basis.z * item.speed * alignment
-		# Slow down behind any vehicle, including around neighborhood corners.
-		for other in traffic:
-			if other.car == moving: continue
-			var gap: Vector3 = other.car.position - moving.position
-			var heading := motion.normalized()
-			var ahead := gap.dot(heading)
-			if absf(gap.cross(heading).y) < 2.2 and ahead > 0 and ahead < 9: motion *= .15
+			var angle := atan2(-gap.x, -gap.z)
+			moving.rotation.y = lerp_angle(moving.rotation.y, angle, minf(1, delta * 2.5))
+			heading = -moving.global_basis.z
+		var desired := _traffic_speed(moving, heading, item.speed)
+		if item.has("route"):
+			var to_target: Vector3 = item.route[item.route_index] - moving.position
+			desired *= maxf(.3, heading.dot(to_target.normalized()))
+		var speed: float = item.get("current_speed", 0.0)
+		speed = move_toward(speed, desired, (6.0 if desired > speed else 10.0) * delta)
+		item.current_speed = speed
+		var motion := heading * speed
+		if not item.has("route"): motion.x = (float(item.lane) - moving.position.x) * 1.4
 		_drive_body(moving, motion, delta)
 		if not item.has("route"):
 			var planar := Vector3(moving.velocity.x, 0, moving.velocity.z)
@@ -708,6 +837,11 @@ func _update_ui() -> void:
 		caption.text = c[5]
 	caption.visible = caption.text != ""
 	caption_bg.visible = caption.visible
+
+func minimap_objective() -> Vector3:
+	if phase == "car": return car.position
+	if phase == "race" and gate_index < GATES.size(): return Vector3(0, 0, GATES[gate_index])
+	return milo.position
 
 func _report_score() -> void:
 	if OS.has_feature("web"):
@@ -806,28 +940,32 @@ func _dense_districts() -> void:
 				_solid_visual(Vector3(2.3, .45, .8), Vector3(side * 19, .5, z + 7), Color("#77614b"))
 
 func _batch_static_geometry() -> void:
-	# Small spatial batches keep distant neighborhoods cullable; repeated meshes share draws.
+	# Merge the many unique box/window shapes by shared material and local tile.
+	# A mesh-RID batch still needed one draw for every different box size.
 	var groups: Dictionary = {}
 	for part in static_meshes:
 		if part.material_override != null or part.get_surface_override_material(0) != null: continue
+		var material := part.mesh.surface_get_material(0)
 		var pos := part.global_position
-		var key := "%s:%d:%d" % [part.mesh.get_rid().get_id(), floori(pos.x / 150), floori(pos.z / 150)]
-		if not groups.has(key): groups[key] = {"mesh":part.mesh, "transforms":[]}
-		groups[key].transforms.append(part.global_transform)
+		var key := "%s:%d:%d" % [material.get_rid().get_id(), floori(pos.x / 150), floori(pos.z / 150)]
+		if not groups.has(key):
+			var surface := SurfaceTool.new()
+			surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+			groups[key] = {"surface":surface, "material":material}
+		groups[key].surface.append_from(part.mesh, 0, part.global_transform)
 		part.queue_free()
 	for group in groups.values():
-		var mm := MultiMesh.new()
-		mm.transform_format = MultiMesh.TRANSFORM_3D
-		mm.mesh = group.mesh
-		mm.instance_count = group.transforms.size()
-		for i in mm.instance_count: mm.set_instance_transform(i, group.transforms[i])
-		var batch := MultiMeshInstance3D.new()
-		batch.multimesh = mm
-		# MultiMesh bounds remain in world coordinates; camera frustum culls each local tile.
-		add_child(batch)
+		var mesh := MeshInstance3D.new()
+		mesh.mesh = group.surface.commit()
+		mesh.mesh.surface_set_material(0, group.material)
+		add_child(mesh)
 	static_meshes.clear()
 
-func _day_cycle() -> void:
+func _day_cycle(delta: float = 1.0) -> void:
+	# Sky color edits rebuild its lighting map; a 16-minute cycle needs only 2Hz.
+	sky_refresh += delta
+	if sky_refresh < .5: return
+	sky_refresh = 0.0
 	day_hour = fmod(9.5 + elapsed / 40.0, 24.0)
 	var angle := (day_hour - 6) / 24 * TAU
 	var daylight := clampf(sin(angle) * 1.3, 0, 1)

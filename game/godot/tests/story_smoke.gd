@@ -70,6 +70,13 @@ func run() -> void:
 	await frames(60)
 	key(KEY_D, false)
 	check(game.avatar.position.x > start.x + 1.5 and visual.global_basis.z.x > .8, "D moves and turns the character to the right")
+	game.camera_yaw = PI / 2
+	var rotated_start: Vector3 = game.avatar.position
+	key(KEY_W, true)
+	await frames(60)
+	key(KEY_W, false)
+	check(game.avatar.position.x < rotated_start.x - 1.5 and visual.global_basis.z.x < -.8, "W follows the camera's forward direction after orbiting")
+	game.camera_yaw = 0
 	game.avatar.position = Vector3(-20, .15, -30)
 	(game.avatar as CharacterBody3D).velocity = Vector3.ZERO
 	key(KEY_A, true)
